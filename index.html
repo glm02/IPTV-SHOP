@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV PRO SHOP</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet">
+    <style>
+        body { background-color: black; color: white; font-family: sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .custom-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('shop');
+            const [userTrialUsed, setUserTrialUsed] = useState(false);
+            const solanaAddress = "BqXfUGAXHmeVEFVdQJDJxme2XDXamUzaSSdML67Lz7gr";
+            const supportHandle = "ukr92k";
+
+            const products = [
+                { id: 1, name: 'PREMIUM - 1 MOIS', price: 10, desc: 'Sport 4K • 130k Films • 30k Séries' },
+                { id: 2, name: 'PREMIUM - 6 MOIS', price: 50, desc: 'Pack Économique • Qualité Ultra HD', tag: 'POPULAIRE' },
+                { id: 3, name: 'PREMIUM - 12 MOIS', price: 90, desc: 'Meilleur Prix • Qualité 4K ', tag: 'MEILLEURE VALEUR' }
+            ];
+
+            const copyToClipboard = (text) => {
+                navigator.clipboard.writeText(text);
+                alert("Adresse copiée !");
+            };
+
+            return (
+                <div className="min-h-screen pb-24">
+                    {/* Header */}
+                    <div className="p-6 border-b border-white/10 sticky top-0 bg-black/80 custom-blur z-50 flex justify-between items-center">
+                        <h1 className="text-xl font-black italic tracking-tighter">IPTV<span className="text-gray-500">PRO</span></h1>
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Online</span>
+                        </div>
+                    </div>
+
+                    <main className="p-6 space-y-8 max-w-md mx-auto">
+                        {activeTab === 'shop' && (
+                            <div className="space-y-6">
+                                {/* Stats Highlights */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                                        <p className="text-2xl font-black italic">130K</p>
+                                        <p className="text-[8px] font-bold text-gray-500 uppercase">Films 4K & UHD</p>
+                                    </div>
+                                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                                        <p className="text-2xl font-black italic">30K</p>
+                                        <p className="text-[8px] font-bold text-gray-500 uppercase">Séries (Netflix+)</p>
+                                    </div>
+                                </div>
+
+                                {/* Trial Card */}
+                                {!userTrialUsed && (
+                                    <div onClick={() => {setUserTrialUsed(true); alert("Demande envoyée !");}} className="bg-white text-black p-5 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                                        <div>
+                                            <p className="font-black text-sm italic">ESSAI GRATUIT 24H</p>
+                                            <p className="text-[9px] font-bold uppercase opacity-60 tracking-wider">Testez le Sport en 4K</p>
+                                        </div>
+                                        <div className="bg-black text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase">Récupérer</div>
+                                    </div>
+                                )}
+
+                                {/* Products List */}
+                                <div className="space-y-4">
+                                    <h2 className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em]">Abonnements</h2>
+                                    {products.map(p => (
+                                        <div key={p.id} className="bg-white/5 border border-white/10 p-6 rounded-[32px] space-y-4 relative overflow-hidden">
+                                            {p.tag && <div className="absolute top-0 right-0 bg-white text-black text-[7px] font-black px-3 py-1 rounded-bl-xl uppercase">{p.tag}</div>}
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h3 className="font-black italic text-lg">{p.name}</h3>
+                                                    <p className="text-[10px] text-gray-500 font-bold uppercase">{p.desc}</p>
+                                                </div>
+                                                <p className="text-xl font-black italic">{p.price}€</p>
+                                            </div>
+                                            <button onClick={() => setActiveTab('wallet')} className="w-full bg-white text-black py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all">S'abonner</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'wallet' && (
+                            <div className="space-y-6">
+                                <div className="bg-white text-black p-10 rounded-[40px] text-center border-4 border-white/10">
+                                    <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Solde Compte</p>
+                                    <h2 className="text-6xl font-black italic tracking-tighter">0.00€</h2>
+                                </div>
+                                <div className="bg-white/5 border border-white/10 p-6 rounded-[32px] space-y-4">
+                                    <h3 className="font-black italic text-sm uppercase">Recharger via Solana</h3>
+                                    <div className="space-y-2">
+                                        <p className="text-[9px] font-bold text-gray-500 uppercase">Adresse de dépôt (SOL)</p>
+                                        <div onClick={() => copyToClipboard(solanaAddress)} className="bg-black p-4 rounded-xl border border-white/20 text-[9px] font-mono break-all cursor-pointer hover:border-white/50 transition-all">
+                                            {solanaAddress}
+                                        </div>
+                                    </div>
+                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full border border-white/20 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">Contacter Support @{supportHandle}</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'profile' && (
+                            <div className="space-y-6 text-center py-10">
+                                <div className="w-20 h-20 bg-white/10 rounded-3xl mx-auto flex items-center justify-center border border-white/20">
+                                    <span className="text-2xl font-black italic">U</span>
+                                </div>
+                                <div>
+                                    <h2 className="font-black text-xl italic uppercase">Client Premium</h2>
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">ID: #51234</p>
+                                </div>
+                                <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Historique</p>
+                                    <p className="text-xs font-bold mt-2 opacity-30 italic uppercase">Aucun achat effectué</p>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Navbar */}
+                    <nav className="fixed bottom-6 left-6 right-6 flex bg-white/10 backdrop-blur-2xl border border-white/10 rounded-full p-1.5 z-50 shadow-2xl">
+                        {['shop', 'wallet', 'profile'].map(tab => (
+                            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 font-black text-[9px] uppercase tracking-widest rounded-full transition-all ${activeTab === tab ? 'bg-white text-black' : 'text-gray-500'}`}>
+                                {tab}
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
