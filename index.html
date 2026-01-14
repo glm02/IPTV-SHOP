@@ -10,18 +10,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --accent: #3b82f6; /* Un bleu électrique pour le sérieux et la tech */
+        }
+
         body { 
-            background-color: #000; 
-            color: #fff; 
+            background-color: #050505; 
+            color: #ffffff; 
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
-        .blur-bg { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-        .premium-border { border: 1px solid rgba(255, 255, 255, 0.08); }
-        .gradient-text { background: linear-gradient(135deg, #fff 0%, #717171 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-dark { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        .gradient-text { background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .accent-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .card-shadow { shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        
+        .page-enter { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-active { transform: scale(0.96); transition: transform 0.1s ease; }
     </style>
 </head>
 <body>
@@ -39,21 +53,21 @@
             const supportHandle = "ukr92k";
 
             const products = [
-                { id: 1, name: 'PASS DISCOVERY - 1 MOIS', price: 10, desc: 'Ultra HD • 130k Films • 30k Séries', feat: ['4K Natif', 'Toutes chaînes Sport', '1 Écran'], color: 'from-gray-900' },
-                { id: 2, name: 'PASS ELITE - 6 MOIS', price: 50, desc: 'Le choix des passionnés • Stable', feat: ['Support Prioritaire 24/7', 'Anti-Freeze v4', 'VOD Illimitée'], tag: 'RECOMMANDÉ', color: 'from-white/10' },
-                { id: 3, name: 'PASS ULTIMATE - 12 MOIS', price: 90, desc: 'L\'expérience sans limites • Économie max', feat: ['2 Écrans simultanés', 'IPTV + VOD + Replay', 'Installation Express'], tag: 'BEST VALUE', color: 'from-white/20' }
+                { id: 1, name: 'DISCOVERY - 1 MOIS', price: 10, desc: 'Ultra HD • 130k Films • 30k Séries', feat: ['Qualité 4K stable', 'Toutes les chaînes Sport', 'Zapping < 1s'], tag: 'ESSAI' },
+                { id: 2, name: 'ELITE - 6 MOIS', price: 50, desc: 'Le choix des passionnés • Pas de coupure', feat: ['Support VIP Prioritaire', 'Anti-Freeze v4.2', 'VOD 4K Illimitée'], tag: 'POPULAIRE' },
+                { id: 3, name: 'ULTIMATE - 12 MOIS', price: 90, desc: 'L\'expérience ultime • 2 Écrans', feat: ['2 Connexions simultanées', 'Full Replay & Timeshift', 'Installation Express'], tag: 'ÉCONOMIE MAX' }
             ];
 
             const reviews = [
-                { user: "Jean_D", date: "Il y a 1h", text: "Support technique incroyable. Réponse en 2 min pour mon installation sur Smart TV.", rating: 5 },
-                { user: "Kader_Pro", date: "Hier", text: "Le meilleur catalogue VOD du marché. Tout Netflix/Prime/Disney est là.", rating: 5 },
-                { user: "Lise_M", date: "Il y a 2j", text: "Aucune coupure pendant le Classico. Qualité 4K vraiment bluffante.", rating: 5 }
+                { user: "Dimitri_75", date: "Il y a 45 min", text: "Support technique au top, UKR92k m'a répondu en 2 minutes pour configurer mon boitier.", rating: 5 },
+                { user: "Marc.Luxe", date: "Hier", text: "La qualité du sport est bluffante, on sent que les serveurs sont puissants. Pas de lag.", rating: 5 },
+                { user: "Sofiane_K", date: "Il y a 2j", text: "Enfin un shop sérieux qui ne disparaît pas après l'achat. Je recommande l'abo 12 mois.", rating: 5 }
             ];
 
             const faqs = [
-                { q: "Comment se passe l'installation ?", a: "Après votre achat, notre bot ou notre support vous envoie vos accès. L'installation prend moins de 2 minutes sur n'importe quel appareil." },
-                { q: "Sur quels appareils puis-je regarder ?", a: "Smart TV, Android Box, Firestick, Smartphone, PC et Tablettes. Nous supportons toutes les applications (IPTV Smarters, GSE, etc.)." },
-                { q: "Est-ce que le support est vraiment réactif ?", a: "Oui, notre équipe est disponible 24h/24 et 7j/7. Nous garantissons une aide personnalisée en moins de 5 minutes pour chaque client." }
+                { q: "Pourquoi contacter UKR92k avant de payer ?", a: "C'est une sécurité pour vous et pour nous. Cela permet de vérifier la disponibilité immédiate de votre ligne et de vous guider pour que l'activation soit instantanée." },
+                { q: "Est-ce compatible avec ma Smart TV ?", a: "Oui, nous sommes compatibles avec toutes les Smart TV (Samsung, LG, Sony), ainsi que les Firestick, Android Box et Apple TV via nos applications dédiées." },
+                { q: "Quelles sont les garanties de stabilité ?", a: "Nous utilisons des serveurs en grappe (cluster) avec une disponibilité de 99.9%. En cas de souci, notre support intervient immédiatement." }
             ];
 
             const notify = (text) => {
@@ -72,90 +86,97 @@
             };
 
             return (
-                <div className="min-h-screen pb-36 overflow-x-hidden selection:bg-white/20">
-                    {/* Floating Notif */}
+                <div className="min-h-screen pb-32 overflow-x-hidden">
+                    {/* Floating Notification */}
                     {notif && (
-                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] bg-white text-black px-8 py-3 rounded-2xl font-extrabold text-[10px] uppercase tracking-widest shadow-2xl animate-in slide-in-from-top-10 duration-300">
+                        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg animate-in slide-in-from-top-8 duration-300">
                             {notif}
                         </div>
                     )}
 
-                    {/* Header */}
-                    <div className="px-6 py-6 border-b border-white/5 sticky top-0 bg-black/80 blur-bg z-50 flex justify-between items-center">
-                        <div onClick={() => setPage('home')} className="cursor-pointer group">
-                            <h1 className="text-xl font-extrabold italic tracking-tighter uppercase leading-none">IPTV<span className="text-gray-500">PRO</span></h1>
-                            <div className="h-[1px] w-0 group-hover:w-full bg-white transition-all duration-300"></div>
+                    {/* Navbar Header */}
+                    <header className="px-5 py-5 border-b border-white/5 sticky top-0 glass-dark z-50 flex justify-between items-center">
+                        <div onClick={() => setPage('home')} className="cursor-pointer">
+                            <h1 className="text-lg font-extrabold italic tracking-tighter uppercase leading-none">IPTV<span className="text-blue-500">PRO</span></h1>
+                            <p className="text-[7px] font-bold text-gray-500 tracking-[0.3em] uppercase">Private Access</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="flex flex-col items-end">
-                                <span className="text-[7px] font-bold text-green-500 uppercase tracking-widest animate-pulse">Serveurs Online</span>
-                                <span className="text-[10px] font-extrabold">0.00€</span>
+                            <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                <span className="text-[9px] font-bold uppercase text-gray-400">Stable</span>
                             </div>
                         </div>
-                    </div>
+                    </header>
 
-                    <main className="max-w-md mx-auto px-6 py-8 space-y-12 animate-in fade-in duration-700">
+                    <main className="max-w-md mx-auto px-5 py-6 space-y-10 page-enter">
                         
-                        {/* HOME PAGE */}
+                        {/* PAGE ACCUEIL */}
                         {page === 'home' && (
-                            <div className="space-y-12">
-                                <section className="space-y-6">
-                                    <div className="space-y-2">
-                                        <span className="text-[10px] font-extrabold text-gray-500 uppercase tracking-[0.4em]">Elite Entertainment</span>
-                                        <h2 className="text-6xl font-extrabold italic tracking-tighter leading-[0.85] gradient-text">L'EXCELLENCE<br/>VISUELLE.</h2>
+                            <div className="space-y-10">
+                                <section className="space-y-4">
+                                    <div className="inline-block bg-blue-500/10 text-blue-400 px-3 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-widest border border-blue-500/20">
+                                        N°1 de la stabilité en France
                                     </div>
-                                    <p className="text-gray-400 text-sm font-medium leading-relaxed">
-                                        Vivez le sport en <span className="text-white">4K Natif</span>. Accès exclusif à <span className="text-white">130k films</span> et <span className="text-white">30k séries</span> avec un support client d'élite disponible 24/7.
+                                    <h2 className="text-5xl font-extrabold italic tracking-tighter leading-[0.9] gradient-text">
+                                        LE SPORT &<br/>LE CINÉMA<br/>SANS LIMITES.
+                                    </h2>
+                                    <p className="text-gray-400 text-xs font-medium leading-relaxed pr-8">
+                                        Profitez de <span className="text-white">130,000 films</span> et <span className="text-white">30,000 séries</span> mis à jour quotidiennement. Toutes les chaînes sportives mondiales en qualité 4K native.
                                     </p>
-                                    <div className="flex gap-3">
-                                        <button onClick={() => setPage('shop')} className="flex-1 bg-white text-black py-5 rounded-2xl font-extrabold uppercase tracking-widest text-[10px] transition-all active:scale-95 shadow-lg shadow-white/5">
-                                            Ouvrir le Catalogue
+                                    <div className="flex gap-2 pt-2">
+                                        <button onClick={() => setPage('shop')} className="flex-1 accent-gradient text-white py-4 rounded-xl font-extrabold uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+                                            Voir le Catalogue
                                         </button>
-                                        <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="px-6 border border-white/10 rounded-2xl hover:bg-white/5 transition-all">
-                                            <i className="lucide-message-circle text-white"></i>
+                                        <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="px-5 glass rounded-xl">
+                                            <i className="lucide-message-circle text-white w-5"></i>
                                         </button>
                                     </div>
                                 </section>
 
-                                {/* Support Section Emphasis */}
-                                <section className="bg-white/5 p-8 rounded-[40px] border border-white/10 space-y-4 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <i className="lucide-headphones text-6xl"></i>
+                                {/* Arguments Points */}
+                                <section className="grid grid-cols-2 gap-3">
+                                    <div className="glass p-5 rounded-2xl space-y-2">
+                                        <i className="lucide-zap text-blue-500 w-5"></i>
+                                        <h4 className="text-[10px] font-extrabold uppercase">Zapping Instantané</h4>
+                                        <p className="text-[9px] text-gray-500 leading-normal">Passez d'une chaîne à l'autre en moins de 0.5s sans attente.</p>
                                     </div>
-                                    <h3 className="text-sm font-extrabold uppercase tracking-widest italic flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span> Service Client d'Élite
-                                    </h3>
-                                    <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                                        Oubliez les attentes interminables. Notre support est au sommet : réponse garantie en <span className="text-white">moins de 5 minutes</span> pour une aide technique ou commerciale personnalisée.
+                                    <div className="glass p-5 rounded-2xl space-y-2">
+                                        <i className="lucide-shield-check text-blue-500 w-5"></i>
+                                        <h4 className="text-[10px] font-extrabold uppercase">Service Privé</h4>
+                                        <p className="text-[9px] text-gray-500 leading-normal">Serveurs sécurisés et cryptés pour une totale discrétion.</p>
+                                    </div>
+                                </section>
+
+                                {/* Support Focus */}
+                                <section className="bg-blue-600/5 border border-blue-500/20 p-6 rounded-3xl space-y-4 relative overflow-hidden group">
+                                    <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                        <i className="lucide-headphones text-8xl"></i>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                                            <i className="lucide-star text-white w-4"></i>
+                                        </div>
+                                        <h3 className="text-xs font-extrabold uppercase tracking-widest italic">SUPPORT D'ÉLITE 24/7</h3>
+                                    </div>
+                                    <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
+                                        Notre force, c'est d'être là pour vous. Que ce soit pour une installation ou une question, nous répondons en <span className="text-blue-400">moins de 5 minutes</span>. Rejoignez une communauté de clients satisfaits et accompagnés.
                                     </p>
-                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="text-[10px] font-extrabold text-white uppercase tracking-widest flex items-center gap-2 border-b border-white/20 pb-1 w-fit">
-                                        Discutez avec un expert <i className="lucide-arrow-right w-3"></i>
+                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="text-[9px] font-extrabold text-blue-400 uppercase tracking-widest flex items-center gap-2 border-b border-blue-500/30 pb-1 w-fit">
+                                        Contactez UKR92k <i className="lucide-arrow-right w-3"></i>
                                     </button>
                                 </section>
 
-                                {/* Features Grid */}
-                                <section className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white/5 p-6 rounded-3xl border border-white/5 space-y-2">
-                                        <i className="lucide-zap text-white"></i>
-                                        <p className="text-[9px] font-extrabold uppercase tracking-widest text-gray-500">Zapping Instantané</p>
-                                    </div>
-                                    <div className="bg-white/5 p-6 rounded-3xl border border-white/5 space-y-2">
-                                        <i className="lucide-shield-check text-white"></i>
-                                        <p className="text-[9px] font-extrabold uppercase tracking-widest text-gray-500">Sécurité Totale</p>
-                                    </div>
-                                </section>
-                                
-                                {/* FAQ Simple Section */}
-                                <section className="space-y-4">
-                                    <h3 className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-gray-600 px-1">Questions Fréquentes</h3>
+                                {/* FAQ Preview */}
+                                <section className="space-y-3">
+                                    <h3 className="text-[9px] font-extrabold uppercase tracking-[0.3em] text-gray-600 px-1">Besoin d'infos ?</h3>
                                     <div className="space-y-2">
                                         {faqs.map((f, i) => (
-                                            <div key={i} className="bg-white/5 rounded-2xl border border-white/5 overflow-hidden">
-                                                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full p-5 text-left flex justify-between items-center transition-colors hover:bg-white/5">
-                                                    <span className="text-[11px] font-extrabold uppercase tracking-tight">{f.q}</span>
-                                                    <i className={`lucide-chevron-down text-gray-500 transition-transform ${openFaq === i ? 'rotate-180' : ''}`}></i>
+                                            <div key={i} className="glass rounded-xl overflow-hidden">
+                                                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                                    <span className="text-[10px] font-extrabold uppercase tracking-tight">{f.q}</span>
+                                                    <i className={`lucide-chevron-down text-gray-500 w-4 transition-transform ${openFaq === i ? 'rotate-180' : ''}`}></i>
                                                 </button>
-                                                {openFaq === i && <div className="p-5 pt-0 text-[10px] text-gray-500 leading-relaxed font-medium border-t border-white/5">{f.a}</div>}
+                                                {openFaq === i && <div className="p-4 pt-0 text-[10px] text-gray-500 leading-relaxed font-medium border-t border-white/5">{f.a}</div>}
                                             </div>
                                         ))}
                                     </div>
@@ -163,117 +184,150 @@
                             </div>
                         )}
 
-                        {/* SHOP PAGE */}
+                        {/* PAGE SHOP */}
                         {page === 'shop' && (
-                            <div className="space-y-10">
-                                <div className="space-y-2">
-                                    <h2 className="text-4xl font-extrabold italic tracking-tighter uppercase">Nos Abonnements</h2>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Qualité certifiée par nos ingénieurs</p>
+                            <div className="space-y-8">
+                                <div className="space-y-2 px-1">
+                                    <h2 className="text-3xl font-extrabold italic tracking-tighter uppercase">ABONNEMENTS</h2>
+                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Technologie Anti-Freeze intégrée</p>
                                 </div>
-                                <div className="space-y-6">
+                                <div className="space-y-5">
                                     {products.map(p => (
-                                        <div key={p.id} className={`bg-gradient-to-br ${p.color} to-black border border-white/10 p-8 rounded-[45px] space-y-6 relative overflow-hidden group`}>
-                                            {p.tag && <div className="absolute top-0 right-0 bg-white text-black text-[8px] font-extrabold px-5 py-2 rounded-bl-3xl uppercase tracking-widest shadow-xl">{p.tag}</div>}
+                                        <div key={p.id} className="glass p-6 rounded-[28px] space-y-5 relative overflow-hidden">
+                                            {p.tag && <div className="absolute top-0 right-0 bg-blue-600 text-white text-[7px] font-extrabold px-3 py-1.5 rounded-bl-xl uppercase tracking-widest">{p.tag}</div>}
                                             <div className="flex justify-between items-start">
                                                 <div className="space-y-1">
-                                                    <h3 className="font-extrabold italic text-2xl uppercase tracking-tight leading-none">{p.name}</h3>
-                                                    <p className="text-[10px] text-gray-500 font-bold uppercase">{p.desc}</p>
+                                                    <h3 className="font-extrabold italic text-lg uppercase tracking-tight">{p.name}</h3>
+                                                    <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wide">{p.desc}</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-3xl font-extrabold italic tracking-tighter leading-none">{p.price}€</p>
-                                                    <span className="text-[8px] text-gray-600 font-bold uppercase">TTC</span>
+                                                    <p className="text-2xl font-extrabold italic tracking-tighter leading-none">{p.price}€</p>
+                                                    <span className="text-[7px] text-gray-600 font-bold uppercase tracking-widest">Crypto Only</span>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-1 gap-2 border-t border-white/5 pt-6">
+                                            <div className="grid grid-cols-1 gap-2 pt-2 border-t border-white/5">
                                                 {p.feat.map((f, i) => (
-                                                    <div key={i} className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-tight">
-                                                        <i className="lucide-check-circle text-white w-3"></i> {f}
+                                                    <div key={i} className="flex items-center gap-2 text-[9px] font-bold text-gray-400 uppercase tracking-tight">
+                                                        <i className="lucide-check text-blue-500 w-3"></i> {f}
                                                     </div>
                                                 ))}
                                             </div>
-                                            <button onClick={() => setPage('wallet')} className="w-full bg-white text-black py-5 rounded-[22px] font-extrabold text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.97] hover:bg-gray-200">Sélectionner ce pack</button>
+                                            <button onClick={() => setPage('wallet')} className="w-full bg-white text-black py-3.5 rounded-xl font-extrabold text-[10px] uppercase tracking-[0.2em] transition-all active:scale-[0.97]">
+                                                Choisir ce Pack
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* REVIEWS PAGE */}
+                        {/* PAGE AVIS */}
                         {page === 'reviews' && (
-                            <div className="space-y-10 text-center">
-                                <div className="space-y-3">
-                                    <h2 className="text-4xl font-extrabold italic tracking-tighter uppercase">Avis Clients</h2>
+                            <div className="space-y-10">
+                                <div className="text-center space-y-2">
+                                    <h2 className="text-3xl font-extrabold italic tracking-tighter uppercase">AVIS CLIENTS</h2>
                                     <div className="flex justify-center gap-1 text-sm">⭐⭐⭐⭐⭐</div>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Satisfaction garantie à 100%</p>
+                                    <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Basé sur 1,200+ utilisateurs</p>
                                 </div>
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {reviews.map((r, i) => (
-                                        <div key={i} className="bg-white/5 border border-white/5 p-7 rounded-[35px] space-y-4 text-left relative overflow-hidden">
+                                        <div key={i} className="glass p-6 rounded-2xl space-y-3 relative">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-[10px] font-extrabold text-white uppercase tracking-tighter italic">{r.user}</span>
-                                                <span className="text-[8px] font-extrabold text-gray-600 uppercase tracking-widest">{r.date}</span>
+                                                <span className="text-[9px] font-extrabold text-blue-400 uppercase tracking-widest">{r.user}</span>
+                                                <span className="text-[7px] font-extrabold text-gray-600 uppercase tracking-widest">{r.date}</span>
                                             </div>
-                                            <p className="text-[11px] font-medium text-gray-300 leading-relaxed italic">"{r.text}"</p>
+                                            <p className="text-[10px] font-medium text-gray-300 leading-relaxed italic">"{r.text}"</p>
                                         </div>
                                     ))}
-                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full border border-white/10 py-5 rounded-2xl text-[10px] font-extrabold uppercase tracking-widest text-gray-500">Envoyer mon témoignage</button>
+                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full border border-white/10 py-4 rounded-xl text-[9px] font-extrabold uppercase tracking-widest text-gray-500 mt-4">
+                                        Publier un témoignage
+                                    </button>
                                 </div>
                             </div>
                         )}
 
-                        {/* WALLET / PAYMENT PAGE */}
+                        {/* PAGE WALLET / PAYMENT */}
                         {page === 'wallet' && (
-                            <div className="space-y-10">
-                                <div className="bg-white text-black p-14 rounded-[55px] text-center border-4 border-white/10 shadow-[0_0_60px_rgba(255,255,255,0.05)]">
-                                    <p className="text-[9px] font-extrabold uppercase tracking-[0.4em] opacity-40 leading-none mb-4">Portefeuille</p>
-                                    <h2 className="text-7xl font-extrabold italic tracking-tighter leading-none">0.00€</h2>
+                            <div className="space-y-8 page-enter">
+                                <div className="bg-white text-black p-10 rounded-[40px] text-center border-4 border-white/10 shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-600/10 rounded-full -mr-12 -mt-12 blur-2xl"></div>
+                                    <p className="text-[9px] font-extrabold uppercase tracking-[0.4em] opacity-40 mb-3 leading-none">Votre Solde</p>
+                                    <h2 className="text-6xl font-extrabold italic tracking-tighter leading-none">0.00€</h2>
                                 </div>
-                                <div className="bg-white/5 border border-white/10 p-8 rounded-[45px] space-y-10">
+
+                                <div className="glass p-8 rounded-[35px] space-y-8 border-blue-500/10">
                                     <div className="space-y-2">
-                                        <h3 className="font-extrabold italic text-xl uppercase tracking-tight">RECHARGEMENT</h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Réseau Solana (SOL) uniquement</p>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                                            <h3 className="font-extrabold italic text-lg uppercase tracking-tight">PAIEMENT SÉCURISÉ</h3>
+                                        </div>
+                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed pr-10">
+                                            Rechargez votre compte via le réseau Solana (SOL).
+                                        </p>
                                     </div>
+
+                                    {/* Critical Instructions Block */}
+                                    <div className="bg-blue-600/10 border-2 border-blue-500/30 p-5 rounded-2xl space-y-4">
+                                        <div className="flex items-start gap-3">
+                                            <i className="lucide-alert-triangle text-blue-400 w-5 mt-0.5"></i>
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-extrabold uppercase text-white leading-tight">
+                                                    INSTRUCTION CRITIQUE :
+                                                </p>
+                                                <p className="text-[9px] font-bold text-gray-300 leading-relaxed uppercase">
+                                                    Veuillez contacter <span className="text-blue-400">@UKR92k</span> sur Telegram et <span className="text-white border-b border-white">attendre son message</span> de confirmation avant d'effectuer tout transfert.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full bg-blue-600 text-white py-3 rounded-xl font-extrabold text-[9px] uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all">
+                                            Envoyer un message à UKR92k
+                                        </button>
+                                    </div>
+
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center px-1">
-                                            <span className="text-[9px] font-extrabold text-gray-400 uppercase tracking-widest">Votre adresse de dépôt</span>
+                                            <span className="text-[9px] font-extrabold text-gray-400 uppercase tracking-widest">Adresse de paiement (SOL)</span>
                                             <i className="lucide-copy text-gray-600 w-3"></i>
                                         </div>
-                                        <div onClick={() => copy(solanaAddress)} className="bg-black p-6 rounded-3xl border border-white/20 text-[10px] font-mono break-all cursor-pointer hover:border-white/50 transition-all leading-relaxed text-gray-300">
+                                        <div onClick={() => copy(solanaAddress)} className="bg-black p-5 rounded-2xl border border-white/20 text-[9px] font-mono break-all cursor-pointer hover:border-blue-500/40 transition-all leading-relaxed text-gray-300">
                                             {solanaAddress}
                                         </div>
-                                        <p className="text-[8px] text-center text-gray-600 font-extrabold uppercase tracking-[0.2em]">Cliquez pour copier l'adresse</p>
-                                    </div>
-                                    <div className="bg-white text-black p-6 rounded-3xl space-y-4 text-center">
-                                        <p className="text-[10px] font-extrabold uppercase leading-tight tracking-tight">
-                                            Après l'envoi, contactez notre support VIP pour valider votre recharge instantanément.
+                                        <p className="text-[8px] text-center text-gray-600 font-extrabold uppercase tracking-[0.2em] italic">
+                                            Appuyez sur l'adresse pour copier
                                         </p>
-                                        <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full border-2 border-black py-4 rounded-2xl font-extrabold text-[11px] uppercase tracking-widest transition-transform active:scale-95">
-                                            Contacter Support @{supportHandle}
-                                        </button>
+                                    </div>
+
+                                    <div className="pt-2">
+                                        <div className="flex items-center gap-3 text-gray-500 p-4 border border-white/5 rounded-2xl">
+                                            <i className="lucide-info text-blue-500 w-5"></i>
+                                            <p className="text-[8px] font-bold uppercase leading-relaxed tracking-tight">
+                                                Le transfert Solana est quasi-instantané. Une fois validé par l'admin, votre solde sera crédité et vous pourrez commander votre pack.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )}
                     </main>
 
-                    {/* Navbar */}
-                    <nav className="fixed bottom-8 left-6 right-6 z-50">
-                        <div className="bg-white/5 blur-bg border border-white/10 rounded-[40px] p-2 flex justify-between items-center shadow-2xl">
-                            <button onClick={() => setPage('home')} className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all rounded-[32px] ${page === 'home' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
-                                <i className="lucide-home text-sm"></i>
+                    {/* Compact Modern Navbar */}
+                    <nav className="fixed bottom-6 left-6 right-6 z-50">
+                        <div className="bg-white/5 blur-bg border border-white/10 rounded-[30px] p-1.5 flex justify-between items-center shadow-2xl">
+                            <button onClick={() => setPage('home')} className={`flex-1 py-3.5 flex flex-col items-center gap-1.5 transition-all rounded-[25px] ${page === 'home' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
+                                <i className="lucide-home text-[16px]"></i>
                                 <span className="text-[8px] font-extrabold uppercase tracking-tighter">Home</span>
                             </button>
-                            <button onClick={() => setPage('shop')} className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all rounded-[32px] ${page === 'shop' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
-                                <i className="lucide-shopping-cart text-sm"></i>
+                            <button onClick={() => setPage('shop')} className={`flex-1 py-3.5 flex flex-col items-center gap-1.5 transition-all rounded-[25px] ${page === 'shop' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
+                                <i className="lucide-shopping-cart text-[16px]"></i>
                                 <span className="text-[8px] font-extrabold uppercase tracking-tighter">Packs</span>
                             </button>
-                            <button onClick={() => setPage('reviews')} className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all rounded-[32px] ${page === 'reviews' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
-                                <i className="lucide-star text-sm"></i>
+                            <button onClick={() => setPage('reviews')} className={`flex-1 py-3.5 flex flex-col items-center gap-1.5 transition-all rounded-[25px] ${page === 'reviews' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
+                                <i className="lucide-star text-[16px]"></i>
                                 <span className="text-[8px] font-extrabold uppercase tracking-tighter">Avis</span>
                             </button>
-                            <button onClick={() => setPage('wallet')} className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all rounded-[32px] ${page === 'wallet' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
-                                <i className="lucide-user text-sm"></i>
-                                <span className="text-[8px] font-extrabold uppercase tracking-tighter">Moi</span>
+                            <button onClick={() => setPage('wallet')} className={`flex-1 py-3.5 flex flex-col items-center gap-1.5 transition-all rounded-[25px] ${page === 'wallet' ? 'bg-white text-black' : 'text-gray-500 hover:text-white'}`}>
+                                <i className="lucide-credit-card text-[16px]"></i>
+                                <span className="text-[8px] font-extrabold uppercase tracking-tighter">Pay</span>
                             </button>
                         </div>
                     </nav>
