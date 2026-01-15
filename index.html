@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UKR IPTV PRO - PAIEMENT SÉCURISÉ</title>
+    <title>UKR IPTV PRO - SMART PAY</title>
     
     <!-- Bibliothèques Cloud (CDN) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -21,7 +21,7 @@
         :root {
             --rev-blue: #3B82F6;
             --rev-bg: #020617;
-            --rev-card: rgba(15, 23, 42, 0.5);
+            --rev-card: rgba(15, 23, 42, 0.4);
             --rev-border: rgba(59, 130, 246, 0.1);
         }
 
@@ -38,8 +38,7 @@
             background: var(--rev-card); 
             border: 1px solid var(--rev-border);
             border-radius: 28px;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .glass-header { 
@@ -50,14 +49,14 @@
         }
 
         .blue-gradient-text {
-            background: linear-gradient(135deg, #ffffff 40%, #3B82F6 100%);
+            background: linear-gradient(135deg, #ffffff 30%, #3B82F6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .pill-tech {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.15);
             color: #93C5FD;
             padding: 6px 14px;
             border-radius: 100px;
@@ -74,17 +73,25 @@
             border-radius: 35px;
         }
 
-        .crypto-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 16px;
-            border-radius: 20px;
-            cursor: pointer;
+        .crypto-tab {
+            padding: 12px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.2s;
+            cursor: pointer;
         }
-        .crypto-box:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.1); }
+        .crypto-tab.active {
+            background: #3B82F6;
+            color: white;
+            border-color: #60A5FF;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
 
-        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -99,13 +106,14 @@
         const App = () => {
             const [page, setPage] = useState('home');
             const [selectedPack, setSelectedPack] = useState(null);
+            const [crypto, setCrypto] = useState('sol'); // sol, btc, eth
             const [notif, setNotif] = useState(null);
             const [userTg, setUserTg] = useState({ id: "512348", name: "Client", username: "@premium" });
             const [balance, setBalance] = useState(0.00);
 
             const supportHandle = "ukr92k";
             const wallets = {
-                solana: "BqXfUGAXHmeVEFVdQJDJxme2XDXamUzaSSdML67Lz7gr",
+                sol: "BqXfUGAXHmeVEFVdQJDJxme2XDXamUzaSSdML67Lz7gr",
                 btc: "bc1qcrvydcymsxdpntlekh3rsdf7g4ytltfmcsdhsv",
                 eth: "0x779Ac41100193DddC7e680AC8FF30CE078f06714"
             };
@@ -133,7 +141,7 @@
                 
                 initIcons();
                 setTimeout(initIcons, 150);
-            }, [page, selectedPack]);
+            }, [page, selectedPack, crypto]);
 
             const notify = (msg) => {
                 setNotif(msg);
@@ -150,10 +158,16 @@
                 notify(`${label} copié !`);
             };
 
+            // Fonction pour générer le lien de contact avec message pré-rempli
+            const getContactLink = () => {
+                let msg = `Bonjour UKR, je souhaite prendre l'abonnement ${selectedPack ? selectedPack.name : "Premium"}. Mon ID Telegram est ${userTg.id}.`;
+                return `https://t.me/${supportHandle}?text=${encodeURIComponent(msg)}`;
+            };
+
             const packs = [
                 { id: '1M', name: 'Discovery', price: 10, duration: '1 MOIS', details: 'Full 4K • Sport • VOD • 1 Écran' },
-                { id: '6M', name: 'Premium Plus', price: 50, duration: '6 MOIS', details: 'Anti-Freeze v5 • Stable • VIP', tag: 'STAR' },
-                { id: '12M', name: 'Elite Pro', price: 90, duration: '12 MOIS', details: '2 Écrans • Garantie • Économie', tag: 'OFFRE ELITE' }
+                { id: '6M', name: 'Premium Plus', price: 50, duration: '6 MOIS', details: 'Anti-Freeze v5 • Stable • VIP', tag: 'POPULAIRE' },
+                { id: '12M', name: 'Elite Pro', price: 90, duration: '12 MOIS', details: '2 Écrans • Garantie • Économie', tag: 'BEST VALUE' }
             ];
 
             const categories = [
@@ -166,19 +180,19 @@
 
             return (
                 <div className="min-h-screen pb-36">
-                    {/* Background Visual Effects */}
-                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-blue-600/5 blur-[120px] pointer-events-none z-0"></div>
+                    {/* Background Visual Depth */}
+                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-600/5 blur-[120px] pointer-events-none z-0"></div>
 
                     {/* Notification Toast */}
                     {notif && (
-                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-4">
+                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4">
                             <div className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-blue-400/30">
                                 {notif}
                             </div>
                         </div>
                     )}
 
-                    {/* Header */}
+                    {/* Header Smart */}
                     <header className="px-6 py-6 sticky top-0 glass-header z-50 flex justify-between items-center shadow-lg shadow-blue-900/5">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-blue-400/20 shadow-xl relative">
@@ -186,13 +200,16 @@
                                 <i data-lucide="tv-2" className="text-blue-600 absolute"></i>
                             </div>
                             <div className="flex flex-col">
-                                <h1 className="text-[14px] font-black uppercase tracking-tighter leading-none italic">UKR IPTV <span className="text-blue-500">PRO</span></h1>
-                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Haut de Gamme</span>
+                                <div className="flex items-center gap-2">
+                                    <h1 className="text-[14px] font-black uppercase tracking-tighter leading-none italic">UKR IPTV <span className="text-blue-500">PRO</span></h1>
+                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                </div>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Status : Live Support</span>
                             </div>
                         </div>
                         <div className="text-right">
                             <p className="text-[10px] font-black text-blue-400 tracking-tighter leading-none">{balance.toFixed(2)}€</p>
-                            <p className="text-[7px] text-slate-500 uppercase font-bold mt-1">Solde</p>
+                            <p className="text-[7px] text-slate-500 uppercase font-bold mt-1 tracking-tighter">Solde Privé</p>
                         </div>
                     </header>
 
@@ -210,11 +227,11 @@
                                         </p>
                                     </div>
 
-                                    {/* BULLES D'AVANTAGES TECHNIQUES */}
+                                    {/* Pills d'Arguments */}
                                     <div className="flex flex-wrap justify-center gap-2 px-2">
                                         <div className="pill-tech">Anti-Freeze v5.2</div>
                                         <div className="pill-tech">Stable 100%</div>
-                                        <div className="pill-tech">4K Native HDR</div>
+                                        <div className="pill-tech">Master 4K HDR</div>
                                         <div className="pill-tech">VOD Express Daily</div>
                                         <div className="pill-tech">Multi-Device</div>
                                     </div>
@@ -224,23 +241,23 @@
                                     </button>
                                 </section>
 
-                                {/* Statistiques */}
+                                {/* Statistiques d'Impact */}
                                 <section className="grid grid-cols-3 gap-3 text-center">
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none">130K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400">130K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Films</p>
                                     </div>
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none">30K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Séries</p>
                                     </div>
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none">30K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Chaînes</p>
                                     </div>
                                 </section>
 
-                                {/* BULLES D'AVANTAGES ENGAGEMENTS */}
+                                {/* Engagements */}
                                 <section className="space-y-4">
                                     <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Engagement Qualité</h3>
                                     <div className="grid grid-cols-1 gap-3">
@@ -291,7 +308,7 @@
                             <div className="space-y-10">
                                 <div className="text-center space-y-2">
                                     <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">BOUTIQUE.</h2>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Activation Immédiate</p>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Activation Prioritaire sous 5 minutes</p>
                                 </div>
                                 <div className="space-y-4">
                                     {packs.map(p => (
@@ -311,7 +328,7 @@
                                                 onClick={() => { setSelectedPack(p); setPage('wallet'); }} 
                                                 className="w-full bg-white text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-[0.98] transition-all"
                                             >
-                                                Commander ce pack
+                                                Choisir ce plan
                                             </button>
                                         </div>
                                     ))}
@@ -323,65 +340,73 @@
                             <div className="space-y-10 animate-in">
                                 <div className="text-center space-y-4">
                                     <div className="status-pill inline-block">Système Sécurisé</div>
-                                    <h2 className="text-[22px] font-black tracking-tighter uppercase leading-tight italic text-white px-4">
-                                        BIENVENUE {userTg.name.toUpperCase()} (ID: {userTg.id}) SUR IPTV UKR PRO
+                                    <h2 className="text-[20px] font-black tracking-tighter uppercase leading-tight italic text-white px-4 text-center">
+                                        BIENVENUE {userTg.name.toUpperCase()} (ID: {userTg.id})<br/>SUR IPTV UKR PRO
                                     </h2>
                                 </div>
 
-                                {/* SECTION PAIEMENT DÉTAILLÉE */}
-                                <div className="rev-card p-8 border-blue-500/40 bg-blue-900/10 space-y-6">
+                                {/* RÉCAPITULATIF DE COMMANDE INTELLIGENT */}
+                                {selectedPack && (
+                                    <div className="rev-card p-6 border-white/5 bg-white/5 space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Commande en attente</span>
+                                            <span className="text-[10px] font-black text-blue-400 uppercase italic">Achat Immédiat</span>
+                                        </div>
+                                        <div className="flex justify-between items-end">
+                                            <div>
+                                                <p className="text-xl font-black italic uppercase text-white leading-none">{selectedPack.name}</p>
+                                                <p className="text-[9px] text-slate-500 font-bold uppercase mt-1">Durée : {selectedPack.duration}</p>
+                                            </div>
+                                            <p className="text-2xl font-black italic text-blue-500 leading-none">{selectedPack.price}€</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="rev-card p-8 border-blue-500/40 bg-blue-900/10 space-y-6 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0 font-black shadow-lg shadow-blue-600/30 text-xs">1</div>
-                                        <div className="space-y-3">
-                                            <p className="text-[13px] font-black uppercase text-white italic tracking-tight">Message à UKR (Obligatoire)</p>
-                                            <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
-                                                Envoyez impérativement un message à <span className="text-blue-400 font-bold underline italic">@UKR92K</span> en précisant le pack voulu {selectedPack ? <span className="text-white font-black italic">({selectedPack.name})</span> : ""} AVANT de transférer les fonds.
-                                            </p>
-                                            <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl">
-                                                Ouvrir le chat UKR92K
+                                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0 font-black shadow-lg text-xs">1</div>
+                                        <div className="space-y-4">
+                                            <div className="space-y-2">
+                                                <p className="text-[13px] font-black uppercase text-white italic tracking-tight">Message Obligatoire</p>
+                                                <p className="text-[10px] text-slate-300 leading-relaxed font-medium">
+                                                    Envoyez un message à <span className="text-blue-400 font-bold underline italic">@UKR92K</span> avec l'abonnement voulu AVANT de transférer les fonds pour validation instantanée.
+                                                </p>
+                                            </div>
+                                            <button 
+                                                onClick={() => window.open(getContactLink())} 
+                                                className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all"
+                                            >
+                                                Prévenir UKR92K <i data-lucide="message-circle" style={{width:16}}></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
+                                {/* SÉLECTEUR DE CRYPTO INTELLIGENT */}
                                 <div className="space-y-6">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Méthodes de Paiement</h3>
-                                    
-                                    <div className="space-y-3">
-                                        {/* Solana */}
-                                        <div onClick={() => copy(wallets.solana, "Solana")} className="crypto-box flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-[#14F195]/10 text-[#14F195] flex items-center justify-center"><i data-lucide="zap"></i></div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <p className="text-[10px] font-black text-white uppercase leading-none">Solana (SOL)</p>
-                                                <p className="text-[8px] text-slate-500 truncate font-mono mt-1.5">{wallets.solana}</p>
-                                            </div>
-                                            <i data-lucide="copy" className="text-slate-600" style={{width: 16}}></i>
-                                        </div>
-
-                                        {/* BTC */}
-                                        <div onClick={() => copy(wallets.btc, "Bitcoin")} className="crypto-box flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-[#F7931A]/10 text-[#F7931A] flex items-center justify-center"><i data-lucide="bitcoin"></i></div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <p className="text-[10px] font-black text-white uppercase leading-none">Bitcoin (BTC)</p>
-                                                <p className="text-[8px] text-slate-500 truncate font-mono mt-1.5">{wallets.btc}</p>
-                                            </div>
-                                            <i data-lucide="copy" className="text-slate-600" style={{width: 16}}></i>
-                                        </div>
-
-                                        {/* Ethereum */}
-                                        <div onClick={() => copy(wallets.eth, "Ethereum")} className="crypto-box flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-[#627EEA]/10 text-[#627EEA] flex items-center justify-center"><i data-lucide="coins"></i></div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <p className="text-[10px] font-black text-white uppercase leading-none">Ethereum (ETH / USDT)</p>
-                                                <p className="text-[8px] text-slate-500 truncate font-mono mt-1.5">{wallets.eth}</p>
-                                            </div>
-                                            <i data-lucide="copy" className="text-slate-600" style={{width: 16}}></i>
-                                        </div>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div onClick={() => setCrypto('sol')} className={`crypto-tab ${crypto === 'sol' ? 'active' : ''}`}>SOL</div>
+                                        <div onClick={() => setCrypto('btc')} className={`crypto-tab ${crypto === 'btc' ? 'active' : ''}`}>BTC</div>
+                                        <div onClick={() => setCrypto('eth')} className={`crypto-tab ${crypto === 'eth' ? 'active' : ''}`}>ETH</div>
                                     </div>
                                     
-                                    <p className="text-[10px] text-slate-500 text-center uppercase font-bold italic px-6 leading-relaxed">
-                                        Le crédit de votre solde est manuel. Merci de patienter quelques instants après confirmation du réseau.
-                                    </p>
+                                    <div className="rev-card p-8 space-y-6 border-white/5 bg-slate-900/40">
+                                        <div className="text-center space-y-1">
+                                            <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest italic">Adresse de transfert {crypto.toUpperCase()}</p>
+                                        </div>
+                                        <div 
+                                            onClick={() => copy(wallets[crypto], crypto.toUpperCase())} 
+                                            className="bg-slate-950 border border-blue-500/20 p-6 rounded-3xl text-[9px] font-mono break-all cursor-pointer text-slate-400 leading-relaxed active:scale-95 transition-all shadow-inner relative border-dashed text-center group"
+                                        >
+                                            {wallets[crypto]}
+                                            <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 text-[8px] font-black uppercase tracking-widest group-hover:text-white transition-colors">
+                                                <i data-lucide="copy" style={{width: 12}}></i> Cliquer pour copier
+                                            </div>
+                                        </div>
+                                        <p className="text-[9px] text-slate-600 text-center uppercase font-bold leading-relaxed px-4">
+                                            Le crédit de votre solde sera manuel après confirmation blockchain.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
