@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UKR IPTV PRO - SMART PAY</title>
+    <title>UKR IPTV PRO - L'EXPÉRIENCE ULTIME</title>
     
     <!-- Bibliothèques Cloud (CDN) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -38,78 +38,87 @@
             background: var(--rev-card); 
             border: 1px solid var(--rev-border);
             border-radius: 28px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .glass-header { 
-            background: rgba(2, 6, 23, 0.8); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
+            background: rgba(2, 6, 23, 0.85); 
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px); 
             border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
 
         .blue-gradient-text {
-            background: linear-gradient(135deg, #ffffff 30%, #3B82F6 100%);
+            background: linear-gradient(135deg, #ffffff 40%, #3B82F6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .pill-tech {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.15);
-            color: #93C5FD;
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         .nav-floating {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(25px);
             border: 1px solid rgba(59, 130, 246, 0.15);
             border-radius: 35px;
         }
 
         .crypto-tab {
+            flex: 1;
             padding: 12px;
             border-radius: 16px;
             text-align: center;
             font-size: 10px;
             font-weight: 900;
-            text-transform: uppercase;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             cursor: pointer;
         }
         .crypto-tab.active {
             background: #3B82F6;
             color: white;
-            border-color: #60A5FF;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
 
-        .animate-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animations */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { display: flex; width: max-content; animation: scroll 50s linear infinite; }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-shine {
+            position: relative; overflow: hidden;
+        }
+        .btn-shine::after {
+            content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: rotate(25deg); animation: shine 4s infinite;
+        }
+        @keyframes shine { 100% { left: 200%; } }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* FAQ Transition */
+        .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-open .faq-content { max-height: 200px; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useMemo } = React;
 
         const App = () => {
             const [page, setPage] = useState('home');
             const [selectedPack, setSelectedPack] = useState(null);
-            const [crypto, setCrypto] = useState('sol'); // sol, btc, eth
+            const [payMethod, setPayMethod] = useState('crypto'); 
+            const [cryptoType, setCryptoType] = useState('sol');
             const [notif, setNotif] = useState(null);
+            const [openFaq, setOpenFaq] = useState(null);
+            const [timeLeft, setTimeLeft] = useState(7200); // 2h de promo
+            
+            // Mock data Telegram
             const [userTg, setUserTg] = useState({ id: "512348", name: "Client", username: "@premium" });
-            const [balance, setBalance] = useState(0.00);
 
             const supportHandle = "ukr92k";
             const wallets = {
@@ -118,6 +127,19 @@
                 eth: "0x779Ac41100193DddC7e680AC8FF30CE078f06714"
             };
             const logoPath = "UKR PRO logo.png";
+
+            // Timer Logic
+            useEffect(() => {
+                const timer = setInterval(() => setTimeLeft(prev => prev > 0 ? prev - 1 : 0), 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const formatTime = (seconds) => {
+                const h = Math.floor(seconds / 3600);
+                const m = Math.floor((seconds % 3600) / 60);
+                const s = seconds % 60;
+                return `${h}h ${m}m ${s}s`;
+            };
 
             useEffect(() => {
                 const tg = window.Telegram?.WebApp;
@@ -132,16 +154,8 @@
                         });
                     }
                 }
-                
-                const initIcons = () => {
-                    if (window.lucide) {
-                        window.lucide.createIcons();
-                    }
-                };
-                
-                initIcons();
-                setTimeout(initIcons, 150);
-            }, [page, selectedPack, crypto]);
+                if (window.lucide) { window.lucide.createIcons(); }
+            }, [page, selectedPack, payMethod, cryptoType, openFaq]);
 
             const notify = (msg) => {
                 setNotif(msg);
@@ -150,153 +164,149 @@
 
             const copy = (text, label) => {
                 const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
+                el.value = text; document.body.appendChild(el);
+                el.select(); document.execCommand('copy');
                 document.body.removeChild(el);
                 notify(`${label} copié !`);
             };
 
-            // Fonction pour générer le lien de contact avec message pré-rempli
-            const getContactLink = () => {
-                let msg = `Bonjour UKR, je souhaite prendre l'abonnement ${selectedPack ? selectedPack.name : "Premium"}. Mon ID Telegram est ${userTg.id}.`;
-                return `https://t.me/${supportHandle}?text=${encodeURIComponent(msg)}`;
-            };
-
             const packs = [
-                { id: '1M', name: 'Discovery', price: 10, duration: '1 MOIS', details: 'Full 4K • Sport • VOD • 1 Écran' },
-                { id: '6M', name: 'Premium Plus', price: 50, duration: '6 MOIS', details: 'Anti-Freeze v5 • Stable • VIP', tag: 'POPULAIRE' },
-                { id: '12M', name: 'Elite Pro', price: 90, duration: '12 MOIS', details: '2 Écrans • Garantie • Économie', tag: 'BEST VALUE' }
+                { id: '1M', name: 'Discovery', oldPrice: 15, price: 10, duration: '1 MOIS', features: [true, true, false, false] },
+                { id: '6M', name: 'Premium Plus', oldPrice: 65, price: 50, duration: '6 MOIS', features: [true, true, true, false], tag: 'POPULAIRE' },
+                { id: '12M', name: 'Elite Pro', oldPrice: 90, price: 70, duration: '12 MOIS', features: [true, true, true, true], tag: 'OFFRE LIMITÉE' }
             ];
 
-            const categories = [
-                { name: "Bouquet France", detail: "TNT, Canal+, Ciné+, OCS, Divertissement" },
-                { name: "Sports Premium", detail: "DAZN, BeIN, RMC, Eurosport, Canal+ Sport" },
-                { name: "Cinéma & Séries", detail: "Netflix, Disney+, HBO, Paramount+, Apple TV+" },
-                { name: "International", detail: "Belgique, Suisse, USA, UK, Arab, Maghreb, Italie" },
-                { name: "Enfants & Doc", detail: "Disney Jr, Nick, Discovery, Nat Geo, Planète+" }
+            const reviews = [
+                { n: "Thomas R.", d: "Aujourd'hui", t: "Meilleure IPTV, la 4K sur le foot est bluffante." },
+                { n: "Samy B.", d: "Hier", t: "Support hyper réactif, installation en 5min." },
+                { n: "Elena G.", d: "Il y a 2j", t: "Qualité cinéma sur tous mes appareils. 10/10." },
+                { n: "Yassine", d: "Aujourd'hui", t: "Rapport qualité prix imbattable en France." }
+            ];
+
+            const faqs = [
+                { q: "Quels appareils sont compatibles ?", a: "Smart TV (Samsung, LG, Sony), Firestick, Apple TV, Android Box, iOS, PC et même consoles." },
+                { q: "Comment se passe l'activation ?", a: "Après confirmation de votre paiement, un expert vous envoie vos codes et vous guide pour l'installation." },
+                { q: "Y a-t-il des coupures pendant le foot ?", a: "Non, notre technologie Anti-Freeze v5.2 garantit une stabilité totale même lors des gros événements." }
             ];
 
             return (
                 <div className="min-h-screen pb-36">
-                    {/* Background Visual Depth */}
-                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-600/5 blur-[120px] pointer-events-none z-0"></div>
+                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-blue-600/5 blur-[120px] pointer-events-none z-0"></div>
 
-                    {/* Notification Toast */}
                     {notif && (
-                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4">
-                            <div className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-blue-400/30">
+                        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-4">
+                            <div className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-2xl border border-blue-400/30">
                                 {notif}
                             </div>
                         </div>
                     )}
 
-                    {/* Header Smart */}
-                    <header className="px-6 py-6 sticky top-0 glass-header z-50 flex justify-between items-center shadow-lg shadow-blue-900/5">
+                    {/* Timer Banner */}
+                    <div className="bg-blue-600 py-2 text-center sticky top-0 z-[60] shadow-xl">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white flex items-center justify-center gap-2">
+                             ⚡️ FIN DES RÉDUCTIONS DANS : <span className="bg-black/20 px-2 py-0.5 rounded tabular-nums">{formatTime(timeLeft)}</span>
+                        </p>
+                    </div>
+
+                    <header className="px-6 py-6 glass-header sticky top-[34px] z-50 flex justify-between items-center border-b border-white/5">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-blue-400/20 shadow-xl relative">
                                 <img src={logoPath} alt="UKR" className="w-full h-full object-cover" onError={(e) => {e.target.style.display='none'}} />
                                 <i data-lucide="tv-2" className="text-blue-600 absolute"></i>
                             </div>
                             <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                    <h1 className="text-[14px] font-black uppercase tracking-tighter leading-none italic">UKR IPTV <span className="text-blue-500">PRO</span></h1>
-                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                                </div>
-                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Status : Live Support</span>
+                                <h1 className="text-[14px] font-black uppercase tracking-tighter leading-none italic">UKR IPTV <span className="text-blue-500">PRO</span></h1>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Élite Visuelle</span>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <p className="text-[10px] font-black text-blue-400 tracking-tighter leading-none">{balance.toFixed(2)}€</p>
-                            <p className="text-[7px] text-slate-500 uppercase font-bold mt-1 tracking-tighter">Solde Privé</p>
+                        <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-center">
+                             <div className="flex items-center gap-1.5 justify-center">
+                                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                 <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Serveur OK</span>
+                             </div>
+                             <p className="text-[9px] font-black text-blue-500 mt-0.5">Ping: 14ms</p>
                         </div>
                     </header>
 
-                    <main className="max-w-md mx-auto px-6 py-4 space-y-12 relative z-10 animate-in">
+                    <main className="max-w-md mx-auto px-6 py-4 space-y-14 relative z-10 animate-in">
                         
                         {page === 'home' && (
-                            <div className="space-y-14">
+                            <div className="space-y-16">
                                 <section className="space-y-10 text-center pt-6">
                                     <div className="space-y-4">
+                                        <div className="status-pill inline-block text-[8px] tracking-[0.3em] py-1">Exclusivité France 🇫🇷</div>
                                         <h2 className="text-6xl font-black tracking-tighter leading-[0.85] uppercase italic blue-gradient-text">
-                                            IPTV<br/>REINVENTÉE.
+                                            BIENVENUE<br/>DANS L'ÉLITE.
                                         </h2>
                                         <p className="text-slate-400 text-[13px] font-medium leading-relaxed px-4">
-                                            L'infrastructure privée la plus stable du marché. <span className="text-blue-400 font-bold">130k films</span>, <span className="text-blue-400 font-bold">30k séries</span> et tout le Sport en 4K Native.
+                                            Le premier service IPTV privé sans latence. <span className="text-blue-400 font-bold">4K Native</span> pour tous vos écrans.
                                         </p>
                                     </div>
 
-                                    {/* Pills d'Arguments */}
-                                    <div className="flex flex-wrap justify-center gap-2 px-2">
-                                        <div className="pill-tech">Anti-Freeze v5.2</div>
-                                        <div className="pill-tech">Stable 100%</div>
-                                        <div className="pill-tech">Master 4K HDR</div>
-                                        <div className="pill-tech">VOD Express Daily</div>
-                                        <div className="pill-tech">Multi-Device</div>
-                                    </div>
-
-                                    <button onClick={() => setPage('shop')} className="bg-blue-600 text-white w-full py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest active:scale-[0.98] transition-all shadow-xl shadow-blue-900/30">
-                                        Accéder à l'illimité
-                                    </button>
-                                </section>
-
-                                {/* Statistiques d'Impact */}
-                                <section className="grid grid-cols-3 gap-3 text-center">
-                                    <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">130K</p>
-                                        <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Films</p>
-                                    </div>
-                                    <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
-                                        <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Séries</p>
-                                    </div>
-                                    <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
-                                        <p className="text-[7px] font-bold text-slate-500 uppercase mt-2">Chaînes</p>
+                                    <div className="space-y-3">
+                                        <button onClick={() => setPage('shop')} className="btn-shine bg-blue-600 text-white w-full py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-2xl shadow-blue-900/30 transition-transform active:scale-95">
+                                            Découvrir les Offres
+                                        </button>
+                                        <button onClick={() => window.open(`https://t.me/${supportHandle}?text=Bonjour, je souhaite tester le service 24h`)} className="bg-white/5 text-slate-400 w-full py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest border border-white/5">
+                                            Demander un essai 24h
+                                        </button>
                                     </div>
                                 </section>
 
-                                {/* Engagements */}
-                                <section className="space-y-4">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Engagement Qualité</h3>
-                                    <div className="grid grid-cols-1 gap-3">
-                                        <div className="p-6 rounded-[35px] bg-slate-900/30 border border-blue-500/10 flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 shrink-0">
-                                                <i data-lucide="shield-check"></i>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[12px] font-black uppercase italic text-white leading-none">Anonymat Total</p>
-                                                <p className="text-[9px] text-slate-500 font-bold uppercase leading-tight">Paiements cryptés & offshore.</p>
-                                            </div>
-                                        </div>
-                                        <div className="p-6 rounded-[35px] bg-slate-900/30 border border-blue-500/10 flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                                                <i data-lucide="headset"></i>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[12px] font-black uppercase italic text-white leading-none">Support Humain</p>
-                                                <p className="text-[9px] text-slate-500 font-bold uppercase leading-tight">Installation guidée 1-to-1 24/7.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-
-                                <section className="p-8 rounded-[45px] bg-gradient-to-br from-blue-600 to-blue-700 space-y-5 shadow-2xl border border-white/10 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="trophy" style={{width: 80, height: 80}}></i></div>
-                                    <h3 className="text-2xl font-black uppercase italic leading-none text-white relative z-10 text-center">LE STADE À LA MAISON.</h3>
-                                    <p className="text-blue-50 text-[11px] font-medium leading-relaxed relative z-10 text-center px-2">
-                                        Netflix, Disney+, Prime et tout le Sport (Ligue 1, MMA, F1) réunis au même endroit pour une fraction du prix.
-                                    </p>
-                                </section>
-
+                                {/* Comparison Table (Psychological Pricing) */}
                                 <section className="space-y-6">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Bouquets Inclus</h3>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {categories.map((cat, idx) => (
-                                            <div key={idx} className="p-6 rounded-3xl bg-blue-900/5 border border-blue-500/10 text-center">
-                                                <p className="text-[11px] font-black uppercase text-white leading-none italic">{cat.name}</p>
-                                                <p className="text-[8px] text-slate-500 uppercase font-bold tracking-tighter mt-1">{cat.detail}</p>
+                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 text-center">Pourquoi l'Élite ?</h3>
+                                    <div className="rev-card overflow-hidden">
+                                        <table className="w-full text-left text-[10px] font-bold">
+                                            <thead className="bg-white/5 border-b border-white/5">
+                                                <tr>
+                                                    <th className="p-4 uppercase text-slate-500">Avantages</th>
+                                                    <th className="p-4 uppercase text-blue-500 text-center">Elite</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {[
+                                                    { l: "4K HDR Native", v: true },
+                                                    { l: "VOD Illimitée", v: true },
+                                                    { l: "Multi-Écrans (2x)", v: true },
+                                                    { l: "Support VIP 24/7", v: true }
+                                                ].map((row, i) => (
+                                                    <tr key={i}>
+                                                        <td className="p-4 text-slate-300">{row.l}</td>
+                                                        <td className="p-4 text-center text-blue-400">
+                                                            {row.v ? <i data-lucide="check" style={{width:14, margin:'auto'}}></i> : "-"}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                {/* Compatibility */}
+                                <section className="space-y-4 text-center">
+                                    <h3 className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-600">Connecté sur tous vos supports</h3>
+                                    <div className="flex justify-center items-center gap-8 opacity-40">
+                                        <i data-lucide="monitor" style={{width:24}}></i>
+                                        <i data-lucide="smartphone" style={{width:24}}></i>
+                                        <i data-lucide="tablet" style={{width:24}}></i>
+                                        <i data-lucide="box" style={{width:24}}></i>
+                                    </div>
+                                </section>
+
+                                {/* FAQ Section */}
+                                <section className="space-y-4">
+                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1">Questions Fréquentes</h3>
+                                    <div className="space-y-2">
+                                        {faqs.map((faq, i) => (
+                                            <div key={i} className={`rev-card p-5 ${openFaq === i ? 'faq-open' : ''}`} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                                                <div className="flex justify-between items-center">
+                                                    <p className="text-[11px] font-black uppercase text-white tracking-tight">{faq.q}</p>
+                                                    <i data-lucide={openFaq === i ? "chevron-up" : "chevron-down"} style={{width:14}}></i>
+                                                </div>
+                                                <div className="faq-content mt-4">
+                                                    <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{faq.a}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -305,10 +315,10 @@
                         )}
 
                         {page === 'shop' && (
-                            <div className="space-y-10">
+                            <div className="space-y-10 animate-in">
                                 <div className="text-center space-y-2">
-                                    <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">BOUTIQUE.</h2>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Activation Prioritaire sous 5 minutes</p>
+                                    <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">OFFRES.</h2>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Valable uniquement pour les nouveaux clients</p>
                                 </div>
                                 <div className="space-y-4">
                                     {packs.map(p => (
@@ -318,17 +328,17 @@
                                                 <div className="space-y-1">
                                                     <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{p.duration}</span>
                                                     <h3 className="text-xl font-black tracking-tight mt-1 leading-none italic">{p.name}</h3>
-                                                    <p className="text-[9px] text-slate-500 font-bold uppercase mt-2 tracking-tighter italic">{p.details}</p>
                                                 </div>
-                                                <div className="text-right">
+                                                <div className="text-right flex flex-col items-end">
+                                                    <span className="text-[10px] text-red-500 line-through font-bold opacity-60 mb-1">{p.oldPrice}€</span>
                                                     <p className="text-3xl font-black tracking-tighter leading-none italic blue-gradient-text">{p.price}€</p>
                                                 </div>
                                             </div>
                                             <button 
                                                 onClick={() => { setSelectedPack(p); setPage('wallet'); }} 
-                                                className="w-full bg-white text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-[0.98] transition-all"
+                                                className="w-full bg-white text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-95 transition-all"
                                             >
-                                                Choisir ce plan
+                                                Souscrire
                                             </button>
                                         </div>
                                     ))}
@@ -338,102 +348,123 @@
 
                         {page === 'wallet' && (
                             <div className="space-y-10 animate-in">
-                                <div className="text-center space-y-4">
-                                    <div className="status-pill inline-block">Système Sécurisé</div>
-                                    <h2 className="text-[20px] font-black tracking-tighter uppercase leading-tight italic text-white px-4 text-center">
-                                        BIENVENUE {userTg.name.toUpperCase()} (ID: {userTg.id})<br/>SUR IPTV UKR PRO
+                                {/* Payment Stepper */}
+                                <div className="flex justify-between items-center px-4 relative">
+                                    <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/5 -translate-y-1/2 z-0"></div>
+                                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-black z-10">1</div>
+                                    <div className="w-8 h-8 rounded-full bg-white/10 border border-white/5 flex items-center justify-center text-[10px] font-black text-slate-500 z-10">2</div>
+                                    <div className="w-8 h-8 rounded-full bg-white/10 border border-white/5 flex items-center justify-center text-[10px] font-black text-slate-500 z-10">3</div>
+                                </div>
+
+                                <div className="text-center space-y-3">
+                                    <h2 className="text-[18px] font-black tracking-tighter uppercase leading-tight italic text-white px-4 text-center">
+                                        BIENVENUE {userTg.name.toUpperCase()} (ID: {userTg.id}) SUR UKR IPTV PRO
                                     </h2>
                                 </div>
 
-                                {/* RÉCAPITULATIF DE COMMANDE INTELLIGENT */}
-                                {selectedPack && (
-                                    <div className="rev-card p-6 border-white/5 bg-white/5 space-y-4">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Commande en attente</span>
-                                            <span className="text-[10px] font-black text-blue-400 uppercase italic">Achat Immédiat</span>
-                                        </div>
-                                        <div className="flex justify-between items-end">
-                                            <div>
-                                                <p className="text-xl font-black italic uppercase text-white leading-none">{selectedPack.name}</p>
-                                                <p className="text-[9px] text-slate-500 font-bold uppercase mt-1">Durée : {selectedPack.duration}</p>
-                                            </div>
-                                            <p className="text-2xl font-black italic text-blue-500 leading-none">{selectedPack.price}€</p>
+                                <div className="rev-card p-6 border-blue-500/20 bg-blue-600/5 flex justify-between items-center">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center"><i data-lucide="shopping-cart" style={{width:16}}></i></div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-slate-500 uppercase leading-none mb-1">Résumé de commande</p>
+                                            <p className="text-lg font-black italic uppercase text-white leading-none">{selectedPack?.name}</p>
                                         </div>
                                     </div>
-                                )}
-
-                                <div className="rev-card p-8 border-blue-500/40 bg-blue-900/10 space-y-6 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
-                                    <div className="flex gap-4 items-start">
-                                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0 font-black shadow-lg text-xs">1</div>
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <p className="text-[13px] font-black uppercase text-white italic tracking-tight">Message Obligatoire</p>
-                                                <p className="text-[10px] text-slate-300 leading-relaxed font-medium">
-                                                    Envoyez un message à <span className="text-blue-400 font-bold underline italic">@UKR92K</span> avec l'abonnement voulu AVANT de transférer les fonds pour validation instantanée.
-                                                </p>
-                                            </div>
-                                            <button 
-                                                onClick={() => window.open(getContactLink())} 
-                                                className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all"
-                                            >
-                                                Prévenir UKR92K <i data-lucide="message-circle" style={{width:16}}></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <p className="text-xl font-black italic text-blue-500">{selectedPack?.price}€</p>
                                 </div>
 
-                                {/* SÉLECTEUR DE CRYPTO INTELLIGENT */}
                                 <div className="space-y-6">
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div onClick={() => setCrypto('sol')} className={`crypto-tab ${crypto === 'sol' ? 'active' : ''}`}>SOL</div>
-                                        <div onClick={() => setCrypto('btc')} className={`crypto-tab ${crypto === 'btc' ? 'active' : ''}`}>BTC</div>
-                                        <div onClick={() => setCrypto('eth')} className={`crypto-tab ${crypto === 'eth' ? 'active' : ''}`}>ETH</div>
-                                    </div>
-                                    
-                                    <div className="rev-card p-8 space-y-6 border-white/5 bg-slate-900/40">
-                                        <div className="text-center space-y-1">
-                                            <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest italic">Adresse de transfert {crypto.toUpperCase()}</p>
+                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Moyen de règlement</h3>
+                                    <div className="flex gap-2">
+                                        <div onClick={() => setPayMethod('paypal')} className={`method-tab ${payMethod === 'paypal' ? 'active' : ''}`}>
+                                            <i data-lucide="credit-card" style={{width:14}}></i> PayPal
                                         </div>
-                                        <div 
-                                            onClick={() => copy(wallets[crypto], crypto.toUpperCase())} 
-                                            className="bg-slate-950 border border-blue-500/20 p-6 rounded-3xl text-[9px] font-mono break-all cursor-pointer text-slate-400 leading-relaxed active:scale-95 transition-all shadow-inner relative border-dashed text-center group"
-                                        >
-                                            {wallets[crypto]}
-                                            <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 text-[8px] font-black uppercase tracking-widest group-hover:text-white transition-colors">
-                                                <i data-lucide="copy" style={{width: 12}}></i> Cliquer pour copier
+                                        <div onClick={() => setPayMethod('crypto')} className={`method-tab ${payMethod === 'crypto' ? 'active' : ''}`}>
+                                            <i data-lucide="zap" style={{width:14}}></i> Crypto
+                                        </div>
+                                    </div>
+
+                                    <div className="rev-card p-8 border-blue-500/20 space-y-6 shadow-xl">
+                                        <div className="flex gap-4 items-start">
+                                            <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 font-black shadow-lg text-xs">1</div>
+                                            <div className="space-y-4">
+                                                <div className="space-y-1">
+                                                    <p className="text-[12px] font-black uppercase tracking-tight text-white">Validation Telegram</p>
+                                                    <p className="text-[10px] text-slate-400 leading-relaxed">
+                                                        {payMethod === 'paypal' 
+                                                            ? "Confirmez votre pack. Je vous transmettrai mon lien PayPal privé par message." 
+                                                            : "Avertissez-moi de votre dépôt crypto pour prioriser l'activation de votre ligne."}
+                                                    </p>
+                                                </div>
+                                                <button 
+                                                    onClick={() => {
+                                                        const text = `Bonjour UKR, je commande :\n📦 PACK : ${selectedPack?.name}\n💰 PRIX : ${selectedPack?.price}€\n💳 MÉTHODE : ${payMethod.toUpperCase()}\n👤 NOM : ${userTg.name}\n🆔 ID : ${userTg.id}`;
+                                                        window.open(`https://t.me/${supportHandle}?text=${encodeURIComponent(text)}`);
+                                                    }} 
+                                                    className="btn-shine w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all"
+                                                >
+                                                    Confirmer ma commande <i data-lucide="message-circle" style={{width:16}}></i>
+                                                </button>
                                             </div>
                                         </div>
-                                        <p className="text-[9px] text-slate-600 text-center uppercase font-bold leading-relaxed px-4">
-                                            Le crédit de votre solde sera manuel après confirmation blockchain.
-                                        </p>
+
+                                        {payMethod === 'crypto' && (
+                                            <div className="pt-6 border-t border-white/5 space-y-6 animate-in">
+                                                <div className="flex gap-4 items-start">
+                                                    <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 font-black shadow-lg text-xs">2</div>
+                                                    <div className="space-y-4 w-full">
+                                                        <div className="flex gap-2">
+                                                            {['sol', 'btc', 'eth'].map(c => (
+                                                                <div key={c} onClick={() => setCryptoType(c)} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase border border-white/5 text-center cursor-pointer ${cryptoType === c ? 'bg-white/10 text-blue-400' : 'text-slate-500'}`}>
+                                                                    {c}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        <div onClick={() => copy(wallets[cryptoType], cryptoType.toUpperCase())} className="bg-black border border-blue-500/20 p-5 rounded-2xl text-[9px] font-mono break-all cursor-pointer text-slate-300 leading-relaxed text-center group active:scale-95 transition-all">
+                                                            {wallets[cryptoType]}
+                                                            <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 text-[8px] font-black uppercase tracking-widest">
+                                                                <i data-lucide="copy" style={{width:12}}></i> Copier {cryptoType.toUpperCase()}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         )}
 
                         {page === 'reviews' && (
-                            <div className="space-y-12 pb-10">
+                            <div className="space-y-12 animate-in pb-10">
                                 <div className="text-center space-y-3">
-                                    <h2 className="text-3xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">PREUVES.</h2>
-                                    <div className="flex justify-center gap-1.5 text-blue-500">
+                                    <h2 className="text-3xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">AVIS CLIENTS.</h2>
+                                    <div className="flex justify-center gap-1 text-blue-500">
                                         {[1,2,3,4,5].map(s => <i key={s} data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>)}
                                     </div>
-                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">Communauté de 1,200+ membres satisfaits</p>
+                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">Communauté Privée : 1,200+ membres</p>
                                 </div>
-                                <div className="space-y-4">
-                                    {[
-                                        { n: "Thomas R.", d: "Aujourd'hui", t: "Service d'Elite. La 4K sur le sport est impressionnante, zéro coupure pendant l'UFC." },
-                                        { n: "Samy B.", d: "Hier", t: "Activation en 5min chrono. @ukr92k m'a aidé pour l'installation." },
-                                        { n: "Elena G.", d: "Il y a 2j", t: "J'ai arrêté tous mes abonnements cinéma. Qualité parfaite." }
-                                    ].map((r, i) => (
-                                        <div key={i} className="rev-card p-8 space-y-4 border-blue-500/10">
-                                            <div className="flex justify-between items-center">
-                                                <p className="text-[12px] font-black uppercase text-white italic leading-none">{r.n}</p>
-                                                <p className="text-[8px] text-slate-600 font-bold uppercase tracking-widest">{r.d}</p>
+
+                                <div className="relative overflow-hidden py-10 bg-white/[0.01] border-y border-white/5 -mx-6">
+                                    <div className="animate-scroll">
+                                        {[...reviews, ...reviews, ...reviews].map((r, i) => (
+                                            <div key={i} className="rev-card p-6 w-[280px] mx-4 space-y-3 shrink-0">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-[10px] italic uppercase">{r.n[0]}</div>
+                                                        <p className="text-[11px] font-black uppercase text-white italic">{r.n}</p>
+                                                    </div>
+                                                    <p className="text-[8px] text-slate-600 font-bold uppercase">{r.d}</p>
+                                                </div>
+                                                <p className="text-[12px] text-slate-400 leading-relaxed font-medium italic">"{r.t}"</p>
                                             </div>
-                                            <p className="text-[13px] text-slate-400 leading-relaxed font-medium italic">"{r.t}"</p>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="rev-card p-8 text-center space-y-4 mx-4 border-blue-500/10">
+                                    <p className="text-[12px] font-black uppercase text-white italic">Rejoindre la communauté</p>
+                                    <p className="text-[10px] text-slate-500 leading-relaxed">Une fois votre abonnement activé, envoyez votre avis pour obtenir 1 mois gratuit sur votre prochain renouvellement.</p>
                                 </div>
                             </div>
                         )}
@@ -444,14 +475,14 @@
                         <div className="nav-floating p-2 flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
                             {[
                                 { id: 'home', icon: 'home', label: 'Home' },
-                                { id: 'shop', icon: 'shopping-bag', label: 'Offres' },
+                                { id: 'shop', icon: 'shopping-bag', label: 'Shop' },
                                 { id: 'reviews', icon: 'star', label: 'Avis' },
-                                { id: 'wallet', icon: 'credit-card', label: 'Payer' }
+                                { id: 'wallet', icon: 'credit-card', label: 'Paiement' }
                             ].map((t) => (
                                 <button 
                                     key={t.id} 
                                     onClick={() => setPage(t.id)} 
-                                    className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all rounded-[28px] ${page === t.id ? 'bg-blue-600 text-white shadow-[0_0_25px_rgba(37,99,235,0.4)] scale-105' : 'text-slate-500 hover:text-slate-300'}`}
+                                    className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all rounded-[28px] ${page === t.id ? 'bg-blue-600 text-white shadow-[0_0_30px_rgba(59,130,246,0.3)] scale-105' : 'text-slate-500 hover:text-slate-300'}`}
                                 >
                                     <i data-lucide={t.icon} style={{width: 18, height: 18}}></i>
                                     <span className="text-[8px] font-black uppercase tracking-tighter">{t.label}</span>
@@ -468,9 +499,7 @@
     </script>
     <script>
         window.addEventListener('load', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         });
     </script>
     
