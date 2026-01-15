@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UKR IPTV - LE SERVICE PRO</title>
-    <!-- Scripts essentiels pour faire tourner React dans le navigateur -->
+    <title>UKR IPTV PRO - ANALYTICS READY</title>
+    
+    <!-- Bibliothèques Cloud (CDN) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CSS Lucide -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet">
-    <!-- JS Lucide (CORRECTION : Ajout du script manquant) -->
+    
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
         
         :root {
-            --rev-blue: #0075FF;
+            --rev-blue: #3B82F6;
             --rev-bg: #020617;
-            --rev-card: rgba(15, 23, 42, 0.4);
+            --rev-card: rgba(15, 23, 42, 0.5);
             --rev-border: rgba(59, 130, 246, 0.1);
         }
 
@@ -37,44 +38,50 @@
             background: var(--rev-card); 
             border: 1px solid var(--rev-border);
             border-radius: 28px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
         }
 
         .glass-header { 
-            background: rgba(2, 6, 23, 0.7); 
+            background: rgba(2, 6, 23, 0.8); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px); 
             border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
 
         .blue-gradient-text {
-            background: linear-gradient(135deg, #ffffff 30%, #3B82F6 100%);
+            background: linear-gradient(135deg, #ffffff 40%, #3B82F6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .status-pill {
-            background: rgba(0, 117, 255, 0.12);
-            border: 1px solid rgba(0, 117, 255, 0.25);
-            color: #5AA9FF;
-            padding: 4px 12px;
+        .pill-tech {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #93C5FD;
+            padding: 6px 14px;
             border-radius: 100px;
             font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .nav-floating {
             background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(25px);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            border-radius: 32px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 35px;
         }
 
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .avatar-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -86,7 +93,7 @@
         const App = () => {
             const [page, setPage] = useState('home');
             const [notif, setNotif] = useState(null);
-            const [userTg, setUserTg] = useState({ id: "512348", name: "Guest", username: "@premium" });
+            const [userTg, setUserTg] = useState({ id: "512348", name: "Client", username: "@premium" });
             const [balance, setBalance] = useState(0.00);
 
             const supportHandle = "ukr92k";
@@ -107,7 +114,6 @@
                     }
                 }
                 
-                // Initialisation sécurisée des icônes Lucide après le rendu
                 const initIcons = () => {
                     if (window.lucide) {
                         window.lucide.createIcons();
@@ -115,8 +121,7 @@
                 };
                 
                 initIcons();
-                // Petit délai pour s'assurer que le DOM est bien à jour
-                setTimeout(initIcons, 100);
+                setTimeout(initIcons, 150);
             }, [page]);
 
             const notify = (msg) => {
@@ -131,141 +136,154 @@
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                notify("Copié avec succès");
+                notify("Adresse copiée !");
             };
 
             const categories = [
                 { name: "Bouquet France", detail: "TNT, Canal+, Ciné+, OCS, Divertissement" },
                 { name: "Sports Premium", detail: "DAZN, BeIN, RMC, Eurosport, Canal+ Sport" },
-                { name: "International", detail: "Belgique, Suisse, USA, UK, Arab, Maghreb" },
-                { name: "Cinéma & Séries", detail: "Netflix, Disney+, HBO, Paramount+" },
-                { name: "Enfants & Doc", detail: "Disney Jr, Nick, Discovery, Planète+" }
+                { name: "Cinéma & Séries", detail: "Netflix, Disney+, HBO, Paramount+, Apple TV+" },
+                { name: "International", detail: "Belgique, Suisse, USA, UK, Arab, Maghreb, Italie" },
+                { name: "Enfants & Doc", detail: "Disney Jr, Nick, Discovery, Nat Geo, Planète+" }
             ];
 
             const packs = [
-                { id: '1M', name: 'Discovery', price: 10, duration: '1 MOIS', details: 'Full 4K • Sport • VOD' },
-                { id: '6M', name: 'Premium', price: 50, duration: '6 MOIS', details: 'Anti-Freeze v5 • Stable • VIP', tag: 'STAR' },
-                { id: '12M', name: 'Elite Pro', price: 90, duration: '12 MOIS', details: '2 Écrans • Garantie • Économie', tag: 'ELITE' }
+                { id: '1M', name: 'Discovery', price: 10, duration: '1 MOIS', details: 'Full 4K • Sport • VOD • 1 Écran' },
+                { id: '6M', name: 'Premium Plus', price: 50, duration: '6 MOIS', details: 'Anti-Freeze v5 • Stable • VIP', tag: 'STAR' },
+                { id: '12M', name: 'Elite Pro', price: 90, duration: '12 MOIS', details: '2 Écrans • Garantie • Économie', tag: 'OFFRE ELITE' }
             ];
 
             return (
                 <div className="min-h-screen pb-36">
-                    {/* Background Glow */}
-                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-blue-600/10 blur-[120px] pointer-events-none z-0"></div>
+                    {/* Background Visual Effects */}
+                    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-blue-600/5 blur-[120px] pointer-events-none z-0"></div>
+                    <div className="fixed bottom-0 right-0 w-[300px] h-[300px] bg-blue-500/5 blur-[100px] pointer-events-none z-0"></div>
 
-                    {/* Notification */}
+                    {/* Notification Toast */}
                     {notif && (
-                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4">
-                            <div className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(37,99,235,0.4)] border border-blue-400/20">
+                        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-4">
+                            <div className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-blue-400/30">
                                 {notif}
                             </div>
                         </div>
                     )}
 
                     {/* Header */}
-                    <header className="px-6 py-6 sticky top-0 glass-header z-50 flex justify-between items-center shadow-lg shadow-blue-900/10">
+                    <header className="px-6 py-6 sticky top-0 glass-header z-50 flex justify-between items-center shadow-lg shadow-blue-900/5">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-blue-400/20 shadow-[0_0_15px_rgba(37,99,235,0.2)] relative">
+                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-blue-400/20 shadow-xl relative avatar-glow">
                                 <img src={logoPath} alt="UKR" className="w-full h-full object-cover" onError={(e) => {e.target.style.display='none'}} />
                                 <i data-lucide="tv-2" className="text-blue-600 absolute"></i>
                             </div>
                             <div className="flex flex-col">
                                 <h1 className="text-[14px] font-black uppercase tracking-tighter leading-none italic">UKR IPTV <span className="text-blue-500">PRO</span></h1>
-                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Service Elite Certifié</span>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Service Elite</span>
                             </div>
                         </div>
                         <div className="text-right">
                             <p className="text-[10px] font-black text-blue-400 tracking-tighter leading-none">{balance.toFixed(2)}€</p>
+                            <p className="text-[7px] text-slate-500 uppercase font-bold mt-1">Wallet</p>
                         </div>
                     </header>
 
-                    <main className="max-w-md mx-auto px-6 py-4 space-y-12 relative z-10 animate-fade-in">
+                    <main className="max-w-md mx-auto px-6 py-4 space-y-12 relative z-10 animate-in">
                         
                         {page === 'home' && (
-                            <div className="space-y-12">
-                                <section className="space-y-8 text-center pt-4">
+                            <div className="space-y-14">
+                                <section className="space-y-10 text-center pt-6">
                                     <div className="space-y-4">
                                         <h2 className="text-6xl font-black tracking-tighter leading-[0.85] uppercase italic blue-gradient-text">
-                                            VISION<br/>INFINIE.
+                                            VISION<br/>ABSOLUE.
                                         </h2>
                                         <p className="text-slate-400 text-[13px] font-medium leading-relaxed px-4">
-                                            L'accès ultime. <span className="text-blue-400 font-bold">130k films</span>, <span className="text-blue-400 font-bold">30k séries</span> et <span className="text-white italic">30,000 chaînes</span> multilingues en 4K Native.
+                                            L'infrastructure privée la plus stable. <span className="text-blue-400 font-bold">130k films</span>, <span className="text-blue-400 font-bold">30k séries</span> et tout le Sport en 4K Native.
                                         </p>
                                     </div>
+
+                                    <div className="flex flex-wrap justify-center gap-2 px-2">
+                                        <div className="pill-tech">Anti-Freeze v5.2</div>
+                                        <div className="pill-tech">Stable 100%</div>
+                                        <div className="pill-tech">4K Native HDR</div>
+                                        <div className="pill-tech">Plateformes Incluses</div>
+                                    </div>
+
                                     <button onClick={() => setPage('shop')} className="bg-blue-600 text-white w-full py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest active:scale-[0.98] transition-all shadow-xl shadow-blue-900/30">
-                                        Explorer le Catalogue
+                                        Voir les Offres
                                     </button>
                                 </section>
 
                                 {/* Statistiques */}
                                 <section className="grid grid-cols-3 gap-3">
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl text-center">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">130K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none italic uppercase">130K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase tracking-widest mt-2">Films</p>
                                     </div>
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl text-center">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none italic uppercase">30K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase tracking-widest mt-2">Séries</p>
                                     </div>
                                     <div className="bg-blue-900/10 border border-blue-500/10 p-5 rounded-3xl text-center">
-                                        <p className="text-xl font-black tracking-tighter text-blue-400">30K</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-400 leading-none italic uppercase">30K</p>
                                         <p className="text-[7px] font-bold text-slate-500 uppercase tracking-widest mt-2">Chaînes</p>
                                     </div>
                                 </section>
 
-                                {/* Technologies & Avantages */}
+                                {/* Engagements */}
                                 <section className="space-y-4">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1">Technologies & Sécurité</h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-6 rounded-[30px] bg-slate-900/40 border border-blue-500/10 space-y-4 text-center">
-                                            <div className="w-10 h-10 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/10">
-                                                <i data-lucide="zap"></i>
-                                            </div>
-                                            <p className="text-[11px] font-black uppercase italic text-white leading-none">Anti-Freeze</p>
-                                        </div>
-                                        <div className="p-6 rounded-[30px] bg-slate-900/40 border border-blue-500/10 space-y-4 text-center">
-                                            <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/10">
+                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1">Technologies & Confidentialité</h3>
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <div className="p-6 rounded-[35px] bg-slate-900/30 border border-blue-500/10 flex items-center gap-5">
+                                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 shrink-0">
                                                 <i data-lucide="shield-check"></i>
                                             </div>
-                                            <p className="text-[11px] font-black uppercase italic text-white leading-none">Garantie Pro</p>
-                                        </div>
-                                        <div className="p-6 rounded-[30px] bg-slate-900/40 border border-blue-500/10 space-y-4 text-center">
-                                            <div className="w-10 h-10 mx-auto rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/10">
-                                                <i data-lucide="smartphone"></i>
+                                            <div className="space-y-1">
+                                                <p className="text-[12px] font-black uppercase italic text-white leading-none">Anonymat 100%</p>
+                                                <p className="text-[9px] text-slate-500 font-bold uppercase leading-tight">Paiements Solana cryptés & offshore.</p>
                                             </div>
-                                            <p className="text-[11px] font-black uppercase italic text-white leading-none">Multi-App</p>
                                         </div>
-                                        <div className="p-6 rounded-[30px] bg-slate-900/40 border border-blue-500/10 space-y-4 text-center">
-                                            <div className="w-10 h-10 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/10">
-                                                <i data-lucide="lock"></i>
+                                        <div className="p-6 rounded-[35px] bg-slate-900/30 border border-blue-500/10 flex items-center gap-5">
+                                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                                                <i data-lucide="headset"></i>
                                             </div>
-                                            <p className="text-[11px] font-black uppercase italic text-white leading-none">Anonymat</p>
+                                            <div className="space-y-1">
+                                                <p className="text-[12px] font-black uppercase italic text-white leading-none">Installation 1-to-1</p>
+                                                <p className="text-[9px] text-slate-500 font-bold uppercase leading-tight">Accompagnement VIP par @ukr92k.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
 
                                 {/* Argument Sport */}
-                                <section className="p-8 rounded-[40px] bg-blue-600 space-y-5 shadow-[0_15px_40px_rgba(37,99,235,0.3)] border border-white/10 relative overflow-hidden">
+                                <section className="p-8 rounded-[45px] bg-gradient-to-br from-blue-600 to-blue-700 space-y-5 shadow-2xl shadow-blue-900/20 border border-white/10 relative overflow-hidden">
                                     <div className="absolute top-0 right-0 p-4 opacity-10">
                                         <i data-lucide="trophy" style={{width: 80, height: 80}}></i>
                                     </div>
-                                    <h3 className="text-xl font-black uppercase italic leading-none text-white relative z-10">LE STADE À LA MAISON.</h3>
-                                    <p className="text-blue-50 text-[11px] font-medium leading-relaxed relative z-10 uppercase tracking-tight">
-                                        Netflix, Disney+, Prime et tout le Sport mondial (Ligue 1, MMA, F1) réunis au même endroit pour 10x moins cher.
+                                    <h3 className="text-2xl font-black uppercase italic leading-none text-white relative z-10 text-center">LE STADE À LA MAISON.</h3>
+                                    <p className="text-blue-50 text-[11px] font-medium leading-relaxed relative z-10 text-center px-2">
+                                        Netflix, Disney+, Prime et tout le Sport (Ligue 1, MMA, F1) réunis au même endroit pour une fraction du prix.
                                     </p>
                                 </section>
 
-                                {/* Liste Contenu */}
+                                {/* Contenu Inclus */}
                                 <section className="space-y-6">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Contenu Inclus</h3>
+                                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-600 px-1 text-center">Liste des Bouquets</h3>
                                     <div className="grid grid-cols-1 gap-2">
                                         {categories.map((cat, idx) => (
-                                            <div key={idx} className="p-5 rounded-2xl bg-blue-900/5 border border-blue-500/10">
-                                                <p className="text-[10px] font-black uppercase text-white leading-none tracking-tight">{cat.name}</p>
+                                            <div key={idx} className="p-6 rounded-3xl bg-blue-900/5 border border-blue-500/10">
+                                                <p className="text-[11px] font-black uppercase text-white leading-none tracking-tight italic">{cat.name}</p>
                                                 <p className="text-[8px] text-slate-500 uppercase font-bold tracking-tighter mt-1">{cat.detail}</p>
                                             </div>
                                         ))}
                                     </div>
+                                </section>
+
+                                <section className="text-center space-y-6 pt-4 pb-10">
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic px-10 leading-relaxed text-center">
+                                        Infrastructure privée offshore. <br/> Zéro log, discrétion absolue.
+                                    </p>
+                                    <button onClick={() => window.open(`https://t.me/${supportHandle}`)} className="text-[10px] font-black text-white bg-blue-600/10 border border-blue-500/20 px-10 py-4 rounded-full uppercase tracking-widest mx-auto flex items-center gap-3 active:scale-95 transition-all">
+                                        Assistance Client <i data-lucide="message-circle"></i>
+                                    </button>
                                 </section>
                             </div>
                         )}
@@ -273,8 +291,8 @@
                         {page === 'shop' && (
                             <div className="space-y-10">
                                 <div className="text-center space-y-2">
-                                    <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">FORFAITS.</h2>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Paiement SOLANAS (SOL) Uniquement</p>
+                                    <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">PLANS.</h2>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Activation sous 10 minutes</p>
                                 </div>
                                 <div className="space-y-4">
                                     {packs.map(p => (
@@ -283,15 +301,15 @@
                                             <div className="flex justify-between items-start">
                                                 <div className="space-y-1">
                                                     <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{p.duration}</span>
-                                                    <h3 className="text-xl font-black tracking-tight mt-1 leading-none">{p.name}</h3>
-                                                    <p className="text-[9px] text-slate-500 font-bold uppercase mt-2 tracking-tighter italic">{p.details}</p>
+                                                    <h3 className="text-xl font-black tracking-tight mt-1 leading-none italic">{p.name}</h3>
+                                                    <p className="text-[9px] text-slate-500 font-bold uppercase mt-2 tracking-tighter">{p.details}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-3xl font-black tracking-tighter leading-none italic blue-gradient-text">{p.price}€</p>
                                                 </div>
                                             </div>
                                             <button onClick={() => setPage('wallet')} className="w-full bg-white text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-[0.98] transition-all">
-                                                Sélectionner
+                                                Souscrire
                                             </button>
                                         </div>
                                     ))}
@@ -302,38 +320,38 @@
                         {page === 'wallet' && (
                             <div className="space-y-12">
                                 <div className="flex flex-col items-center space-y-6 pt-4 text-center">
-                                    <div className="w-24 h-24 rounded-[35px] bg-blue-600 flex items-center justify-center border-4 border-blue-400/20 shadow-2xl overflow-hidden relative">
+                                    <div className="w-24 h-24 rounded-[35px] bg-blue-600 flex items-center justify-center border-4 border-blue-400/20 shadow-2xl overflow-hidden relative avatar-glow">
                                         <img src={logoPath} className="w-full h-full object-cover" onError={(e) => {e.target.style.display='none';}} />
                                         <i data-lucide="user" style={{width: 40, height: 40}} className="text-white absolute"></i>
                                     </div>
                                     <h3 className="text-3xl font-black italic tracking-tighter uppercase leading-none">{userTg.name}</h3>
-                                    <p className="status-pill tracking-[0.3em]">Membre Élite Privé</p>
+                                    <div className="bg-blue-500/10 border border-blue-500/20 px-4 py-1 rounded-full text-[9px] font-black text-blue-400 uppercase tracking-[0.2em]">Membre Certifié</div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="rev-card p-6 space-y-1 text-center border-blue-500/20">
-                                        <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Solde</p>
+                                        <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Balance</p>
                                         <p className="text-2xl font-black italic tracking-tighter text-blue-400">{balance.toFixed(2)}€</p>
                                     </div>
-                                    <div className="rev-card p-6 space-y-1 text-center border-blue-500/20">
-                                        <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Client ID</p>
+                                    <div className="rev-card p-6 space-y-1 text-center border-blue-500/20 overflow-hidden">
+                                        <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">ID Client</p>
                                         <p className="text-[10px] font-black uppercase text-white truncate px-2">#{userTg.id}</p>
                                     </div>
                                 </div>
 
                                 <div className="rev-card p-8 space-y-8 relative overflow-hidden border-blue-500/30">
                                     <div className="text-center space-y-1">
-                                        <h3 className="font-black text-lg uppercase tracking-tighter italic leading-none text-white">DÉPÔT SOLANA.</h3>
-                                        <p className="text-[9px] text-blue-400 font-black uppercase tracking-widest italic">Crédit immédiat 24/7</p>
+                                        <h3 className="font-black text-lg uppercase tracking-tighter italic leading-none text-white">RECHARGER.</h3>
+                                        <p className="text-[9px] text-blue-400 font-black uppercase tracking-widest italic">Réseau Solana (SOL)</p>
                                     </div>
-                                    <div onClick={() => copy(solanaAddress)} className="bg-slate-950 border border-blue-500/20 p-6 rounded-3xl text-[9px] font-mono break-all cursor-pointer text-slate-400 leading-relaxed active:scale-95 transition-all shadow-inner relative border-dashed text-center group">
+                                    <div onClick={() => copy(solanaAddress)} className="bg-slate-950 border border-blue-500/20 p-6 rounded-3xl text-[9px] font-mono break-all cursor-pointer text-slate-400 leading-relaxed active:scale-95 transition-all shadow-inner relative border-dashed text-center">
                                         {solanaAddress}
-                                        <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 text-[8px] font-black uppercase tracking-widest group-hover:text-white">
-                                            <i data-lucide="copy" style={{width: 12, height: 12}}></i> Copier l'adresse
+                                        <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 text-[8px] font-black uppercase tracking-widest">
+                                            <i data-lucide="copy" style={{width: 12, height: 12}}></i> Copier
                                         </div>
                                     </div>
                                     <p className="text-[10px] text-slate-500 text-center uppercase font-bold italic leading-relaxed">
-                                        Prévenez <span className="text-blue-400 font-black underline italic">@UKR92K</span> sur Telegram avant d'envoyer.
+                                        Envoyez un message à <span className="text-blue-400 font-black underline italic">@UKR92K</span> après votre dépôt.
                                     </p>
                                 </div>
                             </div>
@@ -344,21 +362,17 @@
                                 <div className="text-center space-y-3">
                                     <h2 className="text-3xl font-black tracking-tighter uppercase leading-none italic blue-gradient-text">PREUVES.</h2>
                                     <div className="flex justify-center gap-1.5 text-blue-500">
-                                        <i data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>
-                                        <i data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>
-                                        <i data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>
-                                        <i data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>
-                                        <i data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>
+                                        {[1,2,3,4,5].map(s => <i key={s} data-lucide="star" className="fill-blue-500" style={{width: 14, height: 14}}></i>)}
                                     </div>
-                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">Moyenne 4.9/5 • 1,200+ clients</p>
+                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">Moyenne 4.9/5 • 1,200+ membres</p>
                                 </div>
                                 <div className="space-y-4 pb-10">
                                     {[
-                                        { n: "Thomas R.", d: "Aujourd'hui", t: "Meilleure IPTV de France. La 4K sur le sport est réelle, zéro lag pendant les gros matchs." },
-                                        { n: "Samy B.", d: "Hier", t: "Activation en 5min. Le support @ukr92k est hyper pro et aide pour l'installation." },
-                                        { n: "Elena G.", d: "Il y a 2j", t: "J'ai tout résilié (Netflix, Canal). J'ai tout ici pour une fraction du prix. Imbattable." }
+                                        { n: "Thomas R.", d: "Aujourd'hui", t: "Service d'Elite. La 4K sur le sport est impressionnante, zéro coupure pendant l'UFC." },
+                                        { n: "Samy B.", d: "Hier", t: "Activation en 5min chrono. @ukr92k m'a aidé à tout configurer sur ma TV." },
+                                        { n: "Elena G.", d: "Il y a 2j", t: "J'ai arrêté tous mes abonnements cinéma. J'ai tout ici avec une qualité parfaite." }
                                     ].map((r, i) => (
-                                        <div key={i} className="rev-card p-8 space-y-4 border-blue-500/10">
+                                        <div key={i} className="rev-card p-8 space-y-4 border-blue-500/10 shadow-xl">
                                             <div className="flex justify-between items-center">
                                                 <p className="text-[12px] font-black uppercase text-white italic leading-none">{r.n}</p>
                                                 <p className="text-[8px] text-slate-600 font-bold uppercase tracking-widest">{r.d}</p>
@@ -371,14 +385,14 @@
                         )}
                     </main>
 
-                    {/* Navigation */}
+                    {/* Navbar */}
                     <nav className="fixed bottom-8 left-8 right-8 z-50">
-                        <div className="bg-slate-950/90 backdrop-blur-2xl border border-blue-500/20 p-2 flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-[35px]">
+                        <div className="nav-floating p-2 flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
                             {[
-                                { id: 'home', icon: 'home', label: 'Accueil' },
-                                { id: 'shop', icon: 'shopping-bag', label: 'Shop' },
+                                { id: 'home', icon: 'home', label: 'Home' },
+                                { id: 'shop', icon: 'shopping-bag', label: 'Offres' },
                                 { id: 'reviews', icon: 'star', label: 'Avis' },
-                                { id: 'wallet', icon: 'user', label: 'Compte' }
+                                { id: 'wallet', icon: 'user', label: 'Profil' }
                             ].map((t) => (
                                 <button 
                                     key={t.id} 
@@ -399,12 +413,14 @@
         root.render(<App />);
     </script>
     <script>
-        // Ce script déclenche Lucide de manière sécurisée
         window.addEventListener('load', () => {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
         });
     </script>
+    
+    <!-- VERCEL WEB ANALYTICS -->
+    <script src="/_vercel/insights/script.js"></script>
 </body>
 </html>
