@@ -1,0 +1,64 @@
+{
+  "trial": [
+    {
+      "id": "trial-001",
+      "url": "http://iptv.server.com/play/H7OV6OIG8IJJ/playlist.m3u8",
+      "mdp": "rPxDnTEH6M",
+      "utilise": true
+    },
+    {
+      "id": "trial-002",
+      "url": "http://iptv.server.com/play/AVNX0FLEBLYK/playlist.m3u8",
+      "mdp": "68Bfr3NXbL",
+      "utilise": false
+    },
+    {
+      "id": "trial-003",
+      "url": "http://iptv.server.com/play/T25Q4CX1O63C/playlist.m3u8",
+      "mdp": "8aGeK4xTwo",
+      "utilise": false
+    }
+  ],
+  "1m": [
+    {
+      "id": "1m-001",
+      "url": "http://iptv.server.com/play/FN8QFQWCXLCQ/playlist.m3u8",
+      "mdp": "ixIeBTukvs",
+      "utilise": true
+    },
+    {
+      "id": "1m-002",
+      "url": "http://iptv.server.com/play/MWEARK27GBHJ/playlist.m3u8",
+      "mdp": "BlJPz3MajJ",
+      "utilise": true
+    },
+    {
+      "id": "1m-003",
+      "url": "http://iptv.server.com/play/J5C7IUEVKBIW/playlist.m3u8",
+      "mdp": "2dHBgFmYyt",
+      "utilise": true
+    }
+  ],
+  "6m": [
+    {
+      "id": "6m-001",
+      "url": "http://iptv.server.com/play/RVLHJC4PQTGM/playlist.m3u8",
+      "mdp": "c92QMGl1l0",
+      "utilise": false
+    },
+    {
+      "id": "6m-002",
+      "url": "http://iptv.server.com/play/MSOFQ8V3T8AP/playlist.m3u8",
+      "mdp": "Cr70aen2U4",
+      "utilise": false
+    }
+  ],
+  "12m": [
+    {
+      "id": "12m-001",
+      "url": "http://iptv.server.com/play/U8CBI9LBNUUB/playlist.m3u8",
+      "mdp": "9iMa6br0Kl",
+      "utilise": true
+    }
+  ]
+}
